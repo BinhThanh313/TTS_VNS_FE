@@ -91,71 +91,107 @@ export default function DistrictPage() {
     setData(filteredData);
   };
 
-  // --- HÀM IMPORT ĐÃ ĐƯỢC FIX LỖI TRIỆT ĐỂ ---
+  // --- HÀM IMPORT HỖ TRỢ CẢ EXCEL VÀ CSV CHUẨN YÊU CẦU ---
   const handleImport = (file: File) => { 
     if (!selectedProvinceForImport) {
       message.warning('Vui lòng chọn Tỉnh/Thành phố ở bộ lọc trước khi import file!');
       return Upload.LIST_IGNORE;
     }
 
-    const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
-    if (!isExcel) {
-      message.error('Chỉ hỗ trợ định dạng file Excel (.xlsx, .xls)!');
+    const fileExt = file.name.toLowerCase();
+    const isExcel = fileExt.endsWith('.xlsx') || fileExt.endsWith('.xls');
+    // Nhận diện CSV qua đuôi file hoặc MimeType của trình duyệt
+    const isCsv = fileExt.endsWith('.csv') || file.type === 'text/csv'; 
+
+    if (!isExcel && !isCsv) {
+      message.error('Hệ thống chỉ hỗ trợ định dạng file .xls, .xlsx, .csv!');
       return Upload.LIST_IGNORE;
     }
 
     const processFile = async () => {
       try {
-        const buffer = await file.arrayBuffer();
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(buffer);
-        
-        const worksheet = workbook.getWorksheet(1);
-        if (!worksheet) {
-          message.error('File Excel không có dữ liệu!');
-          return;
-        }
-
         const importedData: DistrictType[] = [];
         const timestamp = Date.now();
 
-        // Hàm bọc an toàn tránh Crash do lỗi `toString` của ExcelJS
-        const getSafeCellValue = (cell: ExcelJS.Cell) => {
-          if (!cell || cell.value === null || cell.value === undefined) return '';
-          try {
-            if (typeof cell.value === 'object') {
-              if ('result' in cell.value) {
-                return (cell.value.result || '').toString().trim();
+        if (isCsv) {
+          // --- XỬ LÝ ĐỌC FILE CSV ---
+          const text = await file.text();
+          const rows = text.split(/\r?\n/); // Tách theo dòng
+          
+          rows.forEach((rowStr, index) => {
+            if (index > 0 && rowStr.trim()) { // Bỏ qua Header và dòng trống
+              // Cắt các cột bằng dấu phẩy và xóa dấu nháy kép
+              const cols = rowStr.split(',').map(col => col.trim().replace(/^"|"$/g, ''));
+              
+              // Nếu file có 3 cột (STT, Mã, Tên), Mã ở index 1, Tên ở index 2
+              // Nếu file có 2 cột (Mã, Tên), Mã ở index 0, Tên ở index 1
+              const maHuyen = cols.length >= 3 ? cols[1] : cols[0];
+              const tenHuyen = cols.length >= 3 ? cols[2] : cols[1];
+
+              if (maHuyen && tenHuyen) {
+                importedData.push({
+                  key: `${timestamp}-${index}`,
+                  stt: 0,
+                  tenTinh: selectedProvinceForImport,
+                  maHuyen: maHuyen,
+                  tenHuyen: tenHuyen,
+                });
               }
-              return cell.text ? cell.text.trim() : '';
             }
-            return cell.value.toString().trim();
-          } catch (e) {
-            return ''; 
+          });
+
+        } else {
+          // --- XỬ LÝ ĐỌC FILE EXCEL (.xlsx) ---
+          const buffer = await file.arrayBuffer();
+          const workbook = new ExcelJS.Workbook();
+          await workbook.xlsx.load(buffer);
+          
+          const worksheet = workbook.getWorksheet(1);
+          if (!worksheet) {
+            message.error('File Excel không có dữ liệu!');
+            return;
           }
-        };
 
-        worksheet.eachRow((row, rowNumber) => {
-          if (rowNumber > 1) {
-            // Lấy cột 1 làm Mã Huyện, cột 2 làm Tên Huyện 
-            // (Bạn có thể điều chỉnh index cột nếu template excel của bạn khác)
-            const maHuyen = getSafeCellValue(row.getCell(1));
-            const tenHuyen = getSafeCellValue(row.getCell(2));
-
-            if (maHuyen && tenHuyen) {
-              importedData.push({
-                key: `${timestamp}-${rowNumber}`,
-                stt: 0,
-                tenTinh: selectedProvinceForImport,
-                maHuyen: maHuyen,
-                tenHuyen: tenHuyen,
-              });
+          const getSafeCellValue = (cell: ExcelJS.Cell) => {
+            if (!cell || cell.value === null || cell.value === undefined) return '';
+            try {
+              if (typeof cell.value === 'object') {
+                if ('result' in cell.value) return (cell.value.result || '').toString().trim();
+                return cell.text ? cell.text.trim() : '';
+              }
+              return cell.value.toString().trim();
+            } catch (e) {
+              return ''; 
             }
-          }
-        });
+          };
+
+          worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber > 1) {
+              // Thử đọc Cột 2 (Mã) và Cột 3 (Tên) trước
+              let maHuyen = getSafeCellValue(row.getCell(2));
+              let tenHuyen = getSafeCellValue(row.getCell(3));
+
+              // Nếu 2 cột đó rỗng, thử lùi lại đọc Cột 1 (Mã) và Cột 2 (Tên)
+              if (!maHuyen && !tenHuyen) {
+                maHuyen = getSafeCellValue(row.getCell(1));
+                tenHuyen = getSafeCellValue(row.getCell(2));
+              }
+
+              if (maHuyen && tenHuyen) {
+                importedData.push({
+                  key: `${timestamp}-${rowNumber}`,
+                  stt: 0,
+                  tenTinh: selectedProvinceForImport,
+                  maHuyen: maHuyen,
+                  tenHuyen: tenHuyen,
+                });
+              }
+            }
+          });
+        }
 
         if (importedData.length === 0) {
-          message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
+          message.warning('Không tìm thấy dữ liệu hợp lệ! Vui lòng kiểm tra lại cấu trúc các cột trong file.');
           return;
         }
 
@@ -171,15 +207,13 @@ export default function DistrictPage() {
         message.success(`Đã import thành công ${importedData.length} Huyện/Thị xã!`);
 
       } catch (error) {
-        console.error("Lỗi khi đọc file Excel:", error);
-        message.error('Đã xảy ra lỗi trong quá trình đọc file. Vui lòng kiểm tra lại định dạng file!');
+        console.error("Lỗi khi đọc file:", error);
+        message.error('Lỗi định dạng file! (Nếu file CSV bị lưu nhầm đuôi .xlsx, hãy đổi lại thành đuôi .csv)');
       }
     };
 
-    // Gọi hàm chạy ngầm
     processFile();
-
-    return false; // Chặn upload lên server
+    return false; // Chặn hành vi mặc định
   };
 
   const columns: ColumnsType<DistrictType> = [
@@ -235,7 +269,8 @@ export default function DistrictPage() {
           </div>
         </div>
         <div className="action-row">
-          <Upload beforeUpload={handleImport} showUploadList={false} accept=".xls,.xlsx">
+          {/* Cập nhật accept hỗ trợ cả csv theo chuẩn tài liệu */}
+          <Upload beforeUpload={handleImport} showUploadList={false} accept=".xls,.xlsx,.csv">
             <Button icon={<ImportOutlined />}>Import file</Button>
           </Upload>
           <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</Button>
