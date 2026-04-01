@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Table, Button, Input, Space, Tooltip, Upload, message, Modal, Form } from 'antd';
 import { SearchOutlined, ImportOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -18,26 +18,6 @@ const mockData: DataType[] = [
   { key: '3', stt: 3, maTinh: '4', tenTinh: 'Cao Bằng' },
   { key: '4', stt: 4, maTinh: '6', tenTinh: 'Bắc Kạn' },
   { key: '5', stt: 5, maTinh: '8', tenTinh: 'Tuyên Quang' },
-  { key: '6', stt: 6, maTinh: '271', tenTinh: 'Hà Nội' },
-  { key: '7', stt: 7, maTinh: '2', tenTinh: 'Hà Giang' },
-  { key: '8', stt: 8, maTinh: '4', tenTinh: 'Cao Bằng' },
-  { key: '9', stt: 9, maTinh: '6', tenTinh: 'Bắc Kạn' },
-  { key: '10', stt: 10, maTinh: '8', tenTinh: 'Tuyên Quang' },
-  { key: '11', stt: 11, maTinh: '271', tenTinh: 'Hà Nội' },
-  { key: '12', stt: 12, maTinh: '2', tenTinh: 'Hà Giang' },
-  { key: '13', stt: 13, maTinh: '4', tenTinh: 'Cao Bằng' },
-  { key: '14', stt: 14, maTinh: '6', tenTinh: 'Bắc Kạn' },
-  { key: '15', stt: 15, maTinh: '8', tenTinh: 'Tuyên Quang' },
-  { key: '16', stt: 16, maTinh: '271', tenTinh: 'Hà Nội' },
-  { key: '17', stt: 17, maTinh: '2', tenTinh: 'Hà Giang' },
-  { key: '18', stt: 18, maTinh: '4', tenTinh: 'Cao Bằng' },
-  { key: '19', stt: 19, maTinh: '6', tenTinh: 'Bắc Kạn' },
-  { key: '20', stt: 20, maTinh: '8', tenTinh: 'Tuyên Quang' },
-  { key: '21', stt: 21, maTinh: '271', tenTinh: 'Hà Nội' },
-  { key: '22', stt: 22, maTinh: '2', tenTinh: 'Hà Giang' },
-  { key: '23', stt: 23, maTinh: '4', tenTinh: 'Cao Bằng' },
-  { key: '24', stt: 24, maTinh: '6', tenTinh: 'Bắc Kạn' },
-  { key: '25', stt: 25, maTinh: '8', tenTinh: 'Tuyên Quang' },
 ];
 
 export default function ProvincePage() {
@@ -59,7 +39,6 @@ export default function ProvincePage() {
   };
 
   const handleUpdate = (values: any) => {
-    // Cập nhật thông tin
     const newData = data.map((item) => 
       item.maTinh === editingRecord?.maTinh ? { ...item, tenTinh: values.tenTinh } : item
     );
@@ -89,57 +68,54 @@ export default function ProvincePage() {
     setData(filteredData);
   };
 
-  const handleImport = (file: File) => {
+  // --- HÀM IMPORT ĐÃ ĐƯỢC SỬA LỖI ---
+  const handleImport = async (file: File) => {
     const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
     if (!isExcel) {
       message.error('Chỉ hỗ trợ định dạng file Excel (.xlsx, .xls)!');
       return Upload.LIST_IGNORE;
     }
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const buffer = e.target?.result;
-      if (buffer) {
-        try {
-          const workbook = new ExcelJS.Workbook();
-          await workbook.xlsx.load(buffer as ArrayBuffer);
-          const worksheet = workbook.getWorksheet(1); 
-          
-          if (!worksheet) {
-            message.error('File Excel không có dữ liệu!');
-            return;
-          }
-
-          const importedData: DataType[] = [];
-          
-          worksheet.eachRow((row, rowNumber) => {
-            if (rowNumber > 1) { 
-              const maTinh = row.getCell(1).value?.toString() || '';
-              const tenTinh = row.getCell(2).value?.toString() || '';
-              
-              if (maTinh && tenTinh) {
-                importedData.push({
-                  key: Date.now().toString() + rowNumber,
-                  stt: data.length + importedData.length + 1,
-                  maTinh: maTinh,
-                  tenTinh: tenTinh,
-                });
-              }
-            }
-          });
-
-          setData((prevData) => [...prevData, ...importedData]);
-          message.success(`Đã import thành công ${importedData.length} Tỉnh/Thành phố!`);
-          
-        } catch (error) {
-          message.error('Đã xảy ra lỗi khi đọc file Excel!');
-          console.error(error);
-        }
+    try {
+      // 1. Sử dụng arrayBuffer() hiện đại thay cho FileReader
+      const buffer = await file.arrayBuffer();
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(buffer);
+      
+      const worksheet = workbook.getWorksheet(1); 
+      if (!worksheet) {
+        message.error('File Excel không có dữ liệu!');
+        return false;
       }
-    };
 
-    reader.readAsArrayBuffer(file);
-    return false; 
+      const importedData: DataType[] = [];
+      
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) { 
+          // 2. Sử dụng .text thay cho .value để tránh lỗi [object Object]
+          const maTinh = row.getCell(1).text?.trim() || '';
+          const tenTinh = row.getCell(2).text?.trim() || '';
+          
+          if (maTinh && tenTinh) {
+            importedData.push({
+              key: `${Date.now()}-${rowNumber}`,
+              stt: data.length + importedData.length + 1,
+              maTinh: maTinh,
+              tenTinh: tenTinh,
+            });
+          }
+        }
+      });
+
+      setData((prevData) => [...prevData, ...importedData]);
+      message.success(`Đã import thành công ${importedData.length} Tỉnh/Thành phố!`);
+      
+    } catch (error) {
+      console.error("Lỗi khi đọc file Excel:", error);
+      message.error('Đã xảy ra lỗi khi đọc file Excel!');
+    }
+
+    return false; // Chặn hành vi upload mặc định
   };
 
   const columns: ColumnsType<DataType> = [
@@ -176,7 +152,8 @@ export default function ProvincePage() {
         </div>
         
         <div className="action-row">
-          <Upload beforeUpload={handleImport} showUploadList={false} accept=".xls,.xlsx">
+          {/* Sửa logic beforeUpload để nhận async function */}
+          <Upload beforeUpload={(file) => { handleImport(file); return false; }} showUploadList={false} accept=".xls,.xlsx">
             <Button icon={<ImportOutlined />}>Import file</Button>
           </Upload>
           <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</Button>
@@ -199,11 +176,8 @@ export default function ProvincePage() {
         cancelText="Hủy"
       >
         <Form form={form} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item 
-            label="Mã tỉnh/TP" 
-            name="maTinh"
-          >
-            <Input disabled placeholder="Nhập mã tỉnh/TP" />
+          <Form.Item label="Mã tỉnh/TP" name="maTinh">
+            <Input disabled placeholder="Mã tỉnh/TP" />
           </Form.Item>
 
           <Form.Item 
