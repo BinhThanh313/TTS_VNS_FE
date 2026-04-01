@@ -68,54 +68,94 @@ export default function ProvincePage() {
     setData(filteredData);
   };
 
-  // --- HÀM IMPORT ĐÃ ĐƯỢC SỬA LỖI ---
-  const handleImport = async (file: File) => {
+  // --- HÀM IMPORT ĐÃ ĐƯỢC FIX LỖI TRIỆT ĐỂ ---
+  const handleImport = (file: File) => {
     const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
     if (!isExcel) {
       message.error('Chỉ hỗ trợ định dạng file Excel (.xlsx, .xls)!');
       return Upload.LIST_IGNORE;
     }
 
-    try {
-      // 1. Sử dụng arrayBuffer() hiện đại thay cho FileReader
-      const buffer = await file.arrayBuffer();
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(buffer);
-      
-      const worksheet = workbook.getWorksheet(1); 
-      if (!worksheet) {
-        message.error('File Excel không có dữ liệu!');
-        return false;
-      }
-
-      const importedData: DataType[] = [];
-      
-      worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) { 
-          // 2. Sử dụng .text thay cho .value để tránh lỗi [object Object]
-          const maTinh = row.getCell(1).text?.trim() || '';
-          const tenTinh = row.getCell(2).text?.trim() || '';
-          
-          if (maTinh && tenTinh) {
-            importedData.push({
-              key: `${Date.now()}-${rowNumber}`,
-              stt: data.length + importedData.length + 1,
-              maTinh: maTinh,
-              tenTinh: tenTinh,
-            });
-          }
+    const processFile = async () => {
+      try {
+        const buffer = await file.arrayBuffer();
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buffer);
+        
+        const worksheet = workbook.getWorksheet(1); 
+        if (!worksheet) {
+          message.error('File Excel không có dữ liệu!');
+          return;
         }
-      });
 
-      setData((prevData) => [...prevData, ...importedData]);
-      message.success(`Đã import thành công ${importedData.length} Tỉnh/Thành phố!`);
-      
-    } catch (error) {
-      console.error("Lỗi khi đọc file Excel:", error);
-      message.error('Đã xảy ra lỗi khi đọc file Excel!');
-    }
+        const importedData: DataType[] = [];
+        const timestamp = Date.now();
 
-    return false; // Chặn hành vi upload mặc định
+        // 1. HÀM BỌC AN TOÀN TRÁNH CRASH THƯ VIỆN EXCELJS
+        const getSafeCellValue = (cell: ExcelJS.Cell) => {
+          // Nếu ô trống hoàn toàn
+          if (!cell || cell.value === null || cell.value === undefined) return '';
+          
+          try {
+            // Nếu ô là một Object (Công thức, RichText, Hyperlink...)
+            if (typeof cell.value === 'object') {
+              // Nếu là công thức (Formula), lấy kết quả (result)
+              if ('result' in cell.value) {
+                return (cell.value.result || '').toString().trim();
+              }
+              // Nếu là RichText, dùng .text nhưng bọc try-catch
+              return cell.text ? cell.text.trim() : '';
+            }
+            // Nếu là số hoặc chuỗi bình thường
+            return cell.value.toString().trim();
+          } catch (e) {
+            return ''; // Nếu ExcelJS lỗi, nhả về chuỗi rỗng để không chết app
+          }
+        };
+
+        worksheet.eachRow((row, rowNumber) => {
+          // Bỏ qua dòng tiêu đề (dòng 1)
+          if (rowNumber > 1) { 
+            // 2. SỬ DỤNG HÀM AN TOÀN ĐỂ LẤY DỮ LIỆU
+            const maTinh = getSafeCellValue(row.getCell(1));
+            const tenTinh = getSafeCellValue(row.getCell(2));
+            
+            // Chỉ thêm vào bảng nếu có cả Mã và Tên
+            if (maTinh && tenTinh) {
+              importedData.push({
+                key: `${timestamp}-${rowNumber}`,
+                stt: 0,
+                maTinh: maTinh,
+                tenTinh: tenTinh,
+              });
+            }
+          }
+        });
+
+        if (importedData.length === 0) {
+          message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
+          return;
+        }
+
+        setData((prevData) => {
+          const startSTT = prevData.length + 1;
+          const finalImportedData = importedData.map((item, index) => ({
+            ...item,
+            stt: startSTT + index
+          }));
+          return [...prevData, ...finalImportedData];
+        });
+
+        message.success(`Đã import thành công ${importedData.length} Tỉnh/Thành phố!`);
+        
+      } catch (error) {
+        console.error("Lỗi khi đọc file Excel:", error);
+        message.error('Đã xảy ra lỗi khi đọc file Excel!');
+      }
+    };
+
+    processFile();
+    return false; 
   };
 
   const columns: ColumnsType<DataType> = [
@@ -153,7 +193,7 @@ export default function ProvincePage() {
         
         <div className="action-row">
           {/* Sửa logic beforeUpload để nhận async function */}
-          <Upload beforeUpload={(file) => { handleImport(file); return false; }} showUploadList={false} accept=".xls,.xlsx">
+          <Upload beforeUpload={handleImport} showUploadList={false} accept=".xls,.xlsx">
             <Button icon={<ImportOutlined />}>Import file</Button>
           </Upload>
           <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</Button>

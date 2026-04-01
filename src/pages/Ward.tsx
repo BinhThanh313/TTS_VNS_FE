@@ -15,7 +15,28 @@ interface WardType {
 
 const mockData: WardType[] = [
   { key: '1', stt: 1, tenHuyen: 'Ba Đình', maXa: '4', tenXa: 'Phường Ba Đình' },
-  // ... dữ liệu mock giữ nguyên
+  { key: '2', stt: 2, tenHuyen: 'Ba Đình', maXa: '277', tenXa: 'Phường Bạch Mai' },
+  { key: '3', stt: 3, tenHuyen: 'Hoàn Kiếm', maXa: '10', tenXa: 'Phường Tràng Tiền' },
+  { key: '4', stt: 4, tenHuyen: 'Ba Đình', maXa: '5', tenXa: 'Phường Kim Mã' },
+  { key: '5', stt: 5, tenHuyen: 'Ba Đình', maXa: '6', tenXa: 'Phường Ngọc Hà' },
+  { key: '6', stt: 6, tenHuyen: 'Ba Đình', maXa: '7', tenXa: 'Phường Đội Cấn' },
+  { key: '7', stt: 7, tenHuyen: 'Hoàn Kiếm', maXa: '11', tenXa: 'Phường Hàng Bạc' },
+  { key: '8', stt: 8, tenHuyen: 'Hoàn Kiếm', maXa: '12', tenXa: 'Phường Hàng Đào' },
+  { key: '9', stt: 9, tenHuyen: 'Hoàn Kiếm', maXa: '13', tenXa: 'Phường Hàng Gai' },
+  { key: '10', stt: 10, tenHuyen: 'Đống Đa', maXa: '20', tenXa: 'Phường Láng Hạ' },
+  { key: '11', stt: 11, tenHuyen: 'Đống Đa', maXa: '21', tenXa: 'Phường Khâm Thiên' },
+  { key: '12', stt: 12, tenHuyen: 'Đống Đa', maXa: '22', tenXa: 'Phường Trung Liệt' },
+  { key: '13', stt: 13, tenHuyen: 'Hai Bà Trưng', maXa: '30', tenXa: 'Phường Bách Khoa' },
+  { key: '14', stt: 14, tenHuyen: 'Hai Bà Trưng', maXa: '31', tenXa: 'Phường Thanh Nhàn' },
+  { key: '15', stt: 15, tenHuyen: 'Hai Bà Trưng', maXa: '32', tenXa: 'Phường Quỳnh Mai' },
+  { key: '16', stt: 16, tenHuyen: 'Cầu Giấy', maXa: '40', tenXa: 'Phường Dịch Vọng' },
+  { key: '17', stt: 17, tenHuyen: 'Cầu Giấy', maXa: '41', tenXa: 'Phường Nghĩa Tân' },
+  { key: '18', stt: 18, tenHuyen: 'Cầu Giấy', maXa: '42', tenXa: 'Phường Mai Dịch' },
+  { key: '19', stt: 19, tenHuyen: 'Thanh Xuân', maXa: '50', tenXa: 'Phường Nhân Chính' },
+  { key: '20', stt: 20, tenHuyen: 'Thanh Xuân', maXa: '51', tenXa: 'Phường Khương Trung' },
+  { key: '21', stt: 21, tenHuyen: 'Thanh Xuân', maXa: '52', tenXa: 'Phường Khương Mai' },
+  { key: '22', stt: 22, tenHuyen: 'Long Biên', maXa: '60', tenXa: 'Phường Bồ Đề' },
+  { key: '23', stt: 23, tenHuyen: 'Long Biên', maXa: '61', tenXa: 'Phường Gia Thụy' },
 ];
 
 export default function WardPage() {
@@ -70,8 +91,8 @@ export default function WardPage() {
     setData(filteredData);
   };
 
-  // --- HÀM IMPORT ĐÃ ĐƯỢC SỬA LỖI TRIỆT ĐỂ ---
-  const handleImport = async (file: File) => {
+  // --- HÀM IMPORT ĐÃ ĐƯỢC CHUẨN HÓA ---
+  const handleImport = (file: File) => {
     if (!selectedDistrictForImport) {
       message.warning('Vui lòng chọn Huyện/Thị xã ở bộ lọc trước khi import file!');
       return Upload.LIST_IGNORE;
@@ -83,53 +104,84 @@ export default function WardPage() {
       return Upload.LIST_IGNORE;
     }
 
-    try {
-      // 1. Sử dụng arrayBuffer() hiện đại (Prefer Blob#arrayBuffer())
-      const buffer = await file.arrayBuffer();
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(buffer);
-      
-      const worksheet = workbook.getWorksheet(1);
-      if (!worksheet) {
-        message.error('File Excel không có dữ liệu!');
-        return false;
-      }
-
-      const importedData: WardType[] = [];
-      
-      worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) { 
-          // 2. Sử dụng .text thay vì .value để tránh lỗi [object Object]
-          const maXa = row.getCell(1).text?.trim() || '';
-          const tenXa = row.getCell(2).text?.trim() || '';
-          
-          if (maXa && tenXa) {
-            importedData.push({
-              key: `${Date.now()}-${rowNumber}`,
-              stt: data.length + importedData.length + 1,
-              tenHuyen: selectedDistrictForImport,
-              maXa: maXa,
-              tenXa: tenXa,
-            });
-          }
+    // Đưa async vào một hàm con chạy ngầm
+    const processFile = async () => {
+      try {
+        const buffer = await file.arrayBuffer();
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buffer);
+        
+        const worksheet = workbook.getWorksheet(1);
+        if (!worksheet) {
+          message.error('File Excel không có dữ liệu!');
+          return;
         }
-      });
 
-      if (importedData.length === 0) {
-        message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
-        return false;
+        const importedData: WardType[] = [];
+        const timestamp = Date.now();
+
+        // Hàm an toàn để lấy dữ liệu từ ô (chống Crash từ ExcelJS)
+        const getSafeCellValue = (cell: ExcelJS.Cell) => {
+          if (!cell || cell.value === null || cell.value === undefined) return '';
+          try {
+            if (typeof cell.value === 'object') {
+              if ('result' in cell.value) {
+                return (cell.value.result || '').toString().trim();
+              }
+              return cell.text ? cell.text.trim() : '';
+            }
+            return cell.value.toString().trim();
+          } catch (e) {
+            return ''; 
+          }
+        };
+
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber > 1) { 
+            // Cột 1 = Mã Xã, Cột 2 = Tên Xã
+            const maXa = getSafeCellValue(row.getCell(1));
+            const tenXa = getSafeCellValue(row.getCell(2));
+            
+            if (maXa && tenXa) {
+              importedData.push({
+                key: `${timestamp}-${rowNumber}`,
+                stt: 0, // Sẽ được cập nhật chính xác sau
+                tenHuyen: selectedDistrictForImport,
+                maXa: maXa,
+                tenXa: tenXa,
+              });
+            }
+          }
+        });
+
+        if (importedData.length === 0) {
+          message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
+          return;
+        }
+
+        // Cập nhật State một cách an toàn
+        setData((prevData) => {
+          const startSTT = prevData.length + 1;
+          const finalImportedData = importedData.map((item, index) => ({
+            ...item,
+            stt: startSTT + index
+          }));
+          return [...prevData, ...finalImportedData];
+        });
+
+        message.success(`Đã import thành công ${importedData.length} Xã/Phường!`);
+        
+      } catch (error) {
+        console.error("Lỗi Import:", error);
+        message.error('Đã xảy ra lỗi khi đọc file Excel. Vui lòng kiểm tra lại định dạng!');
       }
+    };
 
-      setData((prevData) => [...prevData, ...importedData]);
-      message.success(`Đã import thành công ${importedData.length} Xã/Phường!`);
-      
-    } catch (error) {
-      // 3. Xử lý Exception một cách rõ ràng
-      console.error("Lỗi Import:", error);
-      message.error('Đã xảy ra lỗi khi đọc file Excel. Vui lòng kiểm tra lại định dạng!');
-    }
+    // Thực thi
+    processFile();
 
-    return false; // Chặn hành vi upload mặc định của Ant Design
+    // Trả về false ngay để chặn Ant Design tự động upload
+    return false; 
   };
 
   const columns: ColumnsType<WardType> = [
@@ -166,7 +218,11 @@ export default function WardPage() {
               options={[
                 { value: 'Ba Đình', label: 'Ba Đình' }, 
                 { value: 'Hoàn Kiếm', label: 'Hoàn Kiếm' },
-                // ... các options khác
+                { value: 'Đống Đa', label: 'Đống Đa' },
+                { value: 'Hai Bà Trưng', label: 'Hai Bà Trưng' },
+                { value: 'Cầu Giấy', label: 'Cầu Giấy' },
+                { value: 'Thanh Xuân', label: 'Thanh Xuân' },
+                { value: 'Long Biên', label: 'Long Biên' },
               ]} 
               onChange={(val) => { 
                 setSearchDistrict(val); 
@@ -185,8 +241,8 @@ export default function WardPage() {
           </div>
         </div>
         <div className="action-row">
-          {/* Cập nhật beforeUpload để gọi hàm async */}
-          <Upload beforeUpload={(file) => { handleImport(file); return false; }} showUploadList={false} accept=".xls,.xlsx">
+          {/* Cập nhật beforeUpload truyền trực tiếp hàm */}
+          <Upload beforeUpload={handleImport} showUploadList={false} accept=".xls,.xlsx">
             <Button icon={<ImportOutlined />}>Import file</Button>
           </Upload>
           <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</Button>
@@ -219,7 +275,9 @@ export default function WardPage() {
               placeholder="Chọn huyện/thị xã" 
               options={[
                 { value: 'Ba Đình', label: 'Ba Đình' }, 
-                // ...
+                { value: 'Hoàn Kiếm', label: 'Hoàn Kiếm' },
+                { value: 'Đống Đa', label: 'Đống Đa' },
+                { value: 'Hai Bà Trưng', label: 'Hai Bà Trưng' },
               ]} 
             />
           </Form.Item>

@@ -91,7 +91,8 @@ export default function DistrictPage() {
     setData(filteredData);
   };
 
-  const handleImport = async (file: File) => { // Thêm async ở đây
+  // --- HÀM IMPORT ĐÃ ĐƯỢC FIX LỖI TRIỆT ĐỂ ---
+  const handleImport = (file: File) => { 
     if (!selectedProvinceForImport) {
       message.warning('Vui lòng chọn Tỉnh/Thành phố ở bộ lọc trước khi import file!');
       return Upload.LIST_IGNORE;
@@ -103,52 +104,80 @@ export default function DistrictPage() {
       return Upload.LIST_IGNORE;
     }
 
-    try {
-      // 1. Thay FileReader bằng cách viết hiện đại arrayBuffer()
-      const buffer = await file.arrayBuffer();
-      
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(buffer);
-      
-      const worksheet = workbook.getWorksheet(1);
-      if (!worksheet) {
-        message.error('File Excel không có dữ liệu!');
-        return;
-      }
-
-      const importedData: DistrictType[] = [];
-
-      worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) {
-          // 2. Dùng .text để tránh lỗi [object Object]
-          const maHuyen = row.getCell(1).text?.trim() || '';
-          const tenHuyen = row.getCell(2).text?.trim() || '';
-
-          if (maHuyen && tenHuyen) {
-            importedData.push({
-              key: `${Date.now()}-${rowNumber}`,
-              stt: data.length + importedData.length + 1,
-              tenTinh: selectedProvinceForImport,
-              maHuyen: maHuyen,
-              tenHuyen: tenHuyen,
-            });
-          }
+    const processFile = async () => {
+      try {
+        const buffer = await file.arrayBuffer();
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(buffer);
+        
+        const worksheet = workbook.getWorksheet(1);
+        if (!worksheet) {
+          message.error('File Excel không có dữ liệu!');
+          return;
         }
-      });
 
-      if (importedData.length === 0) {
-        message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
-        return;
+        const importedData: DistrictType[] = [];
+        const timestamp = Date.now();
+
+        // Hàm bọc an toàn tránh Crash do lỗi `toString` của ExcelJS
+        const getSafeCellValue = (cell: ExcelJS.Cell) => {
+          if (!cell || cell.value === null || cell.value === undefined) return '';
+          try {
+            if (typeof cell.value === 'object') {
+              if ('result' in cell.value) {
+                return (cell.value.result || '').toString().trim();
+              }
+              return cell.text ? cell.text.trim() : '';
+            }
+            return cell.value.toString().trim();
+          } catch (e) {
+            return ''; 
+          }
+        };
+
+        worksheet.eachRow((row, rowNumber) => {
+          if (rowNumber > 1) {
+            // Lấy cột 1 làm Mã Huyện, cột 2 làm Tên Huyện 
+            // (Bạn có thể điều chỉnh index cột nếu template excel của bạn khác)
+            const maHuyen = getSafeCellValue(row.getCell(1));
+            const tenHuyen = getSafeCellValue(row.getCell(2));
+
+            if (maHuyen && tenHuyen) {
+              importedData.push({
+                key: `${timestamp}-${rowNumber}`,
+                stt: 0,
+                tenTinh: selectedProvinceForImport,
+                maHuyen: maHuyen,
+                tenHuyen: tenHuyen,
+              });
+            }
+          }
+        });
+
+        if (importedData.length === 0) {
+          message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
+          return;
+        }
+
+        setData((prevData) => {
+          const startSTT = prevData.length + 1;
+          const finalImportedData = importedData.map((item, index) => ({
+            ...item,
+            stt: startSTT + index
+          }));
+          return [...prevData, ...finalImportedData];
+        });
+
+        message.success(`Đã import thành công ${importedData.length} Huyện/Thị xã!`);
+
+      } catch (error) {
+        console.error("Lỗi khi đọc file Excel:", error);
+        message.error('Đã xảy ra lỗi trong quá trình đọc file. Vui lòng kiểm tra lại định dạng file!');
       }
+    };
 
-      setData((prevData) => [...prevData, ...importedData]);
-      message.success(`Đã import thành công ${importedData.length} Huyện/Thị xã!`);
-
-    } catch (error) {
-      // 3. Xử lý exception một cách tường minh
-      console.error("Import Error:", error);
-      message.error('Đã xảy ra lỗi trong quá trình đọc file. Vui lòng kiểm tra lại định dạng file!');
-    }
+    // Gọi hàm chạy ngầm
+    processFile();
 
     return false; // Chặn upload lên server
   };
