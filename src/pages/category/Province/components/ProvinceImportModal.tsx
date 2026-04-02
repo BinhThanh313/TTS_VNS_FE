@@ -3,7 +3,7 @@ import { Modal, Form, Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import ExcelJS from 'exceljs';
-import type { IProvince } from '../Province'; // Import interface từ file Province
+import type { IProvince } from '@/types/category'; 
 
 const { Dragger } = Upload;
 

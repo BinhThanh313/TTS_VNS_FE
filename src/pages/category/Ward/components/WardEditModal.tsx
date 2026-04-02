@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select } from 'antd';
-import type { IWard } from '../Ward';
+import type { IWard } from '@/types/category'; 
 
 interface Props {
   open: boolean;

@@ -1,25 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Input, Form, message, Space, Tooltip, Modal } from 'antd';
-import { 
-  SearchOutlined, 
-  ImportOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
-  ExclamationCircleOutlined 
-} from '@ant-design/icons';
+import { SearchOutlined, ImportOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { DataTable } from '@/components/common/DataTable';
 import { ProvinceImportModal } from './components/ProvinceImportModal';
 import { ProvinceEditModal } from './components/ProvinceEditModal';
+import type { IProvince } from '@/types/category';
 import '../styles/Category.scss';
 
 const { confirm } = Modal;
-
-// ĐỊNH NGHĨA KIỂU DỮ LIỆU Ở ĐÂY
-export interface IProvince {
-  id: string | number;
-  maTinh: string;
-  tenTinh: string;
-}
 
 const mockData: IProvince[] = [
   { id: 1, maTinh: '01', tenTinh: 'Thành phố Hà Nội' },
@@ -155,7 +143,6 @@ export const Province: React.FC = () => {
         totalRecords={data.length}
         currentPage={currentPage}
         pageSize={pageSize}
-        bordered={false}
         onPageChange={(page: number, size: number) => {
           setCurrentPage(page);
           setPageSize(size);

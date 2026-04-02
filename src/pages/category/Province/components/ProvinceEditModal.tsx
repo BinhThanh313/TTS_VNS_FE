@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, message } from 'antd';
-import type { IProvince } from '../Province';
+import type { IProvince } from '@/types/category'; 
 
 interface Props {
   open: boolean;

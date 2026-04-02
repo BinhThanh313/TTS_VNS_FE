@@ -4,16 +4,10 @@ import { SearchOutlined, ImportOutlined, EditOutlined, DeleteOutlined, Exclamati
 import { DataTable } from '@/components/common/DataTable';
 import { WardImportModal } from './components/WardImportModal';
 import { WardEditModal } from './components/WardEditModal';
+import type { IWard } from '@/types/category';
 import '../styles/Category.scss';
 
 const { confirm } = Modal;
-
-export interface IWard {
-  id: string | number;
-  districtName: string;
-  code: string;
-  name: string;
-}
 
 const mockWards: IWard[] = [
   { id: 1, districtName: 'Ba Đình', code: '001', name: 'Phường Phúc Xá' },
@@ -138,8 +132,7 @@ export const Ward: React.FC = () => {
         dataSource={data} 
         totalRecords={data.length} 
         currentPage={currentPage} 
-        pageSize={pageSize} 
-        bordered={false} 
+        pageSize={pageSize}  
         onPageChange={(p, s) => { setCurrentPage(p); setPageSize(s); }} 
       />
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, message } from 'antd';
-import type { IDistrict } from '../District';
+import type { IDistrict } from '@/types/category'; 
 
 interface Props {
   open: boolean;

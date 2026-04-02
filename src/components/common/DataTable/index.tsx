@@ -1,9 +1,9 @@
 import { Table } from 'antd';
-import type { TableProps } from 'antd';
+import type { TableProps, TableColumnType } from 'antd';
 
 // Định nghĩa Props mở rộng từ TableProps của Antd
 interface DataTableProps<T extends object> extends TableProps<T> {
-  columns: any[];
+  columns: TableColumnType<T>[];
   dataSource: T[];
   totalRecords?: number;
   currentPage?: number;

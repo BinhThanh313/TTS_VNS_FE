@@ -3,14 +3,14 @@ import { Modal, Form, Select, Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import ExcelJS from 'exceljs';
-import type { IDistrict } from '../District';
+import type { IDistrict } from '@/types/category'; 
 
 const { Dragger } = Upload;
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSuccess: (data: IDistrict[]) => void; // Nhận dữ liệu trả về
+  onSuccess: (data: IDistrict[]) => void;
 }
 
 export const DistrictImportModal: React.FC<Props> = ({ open, onClose, onSuccess }) => {

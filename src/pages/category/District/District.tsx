@@ -4,16 +4,10 @@ import { SearchOutlined, ImportOutlined, EditOutlined, DeleteOutlined, Exclamati
 import { DataTable } from '@/components/common/DataTable';
 import { DistrictImportModal } from './components/DistrictImportModal';
 import { DistrictEditModal } from './components/DistrictEditModal';
+import type { IDistrict } from '@/types/category';
 import '../styles/Category.scss';
 
 const { confirm } = Modal;
-
-export interface IDistrict {
-  id: string | number;
-  provinceName: string;
-  code: string;
-  name: string;
-}
 
 const mockDistricts: IDistrict[] = [
   { id: 1, provinceName: 'Hà Nội', code: '001', name: 'Quận Ba Đình' },
@@ -137,7 +131,6 @@ export const District: React.FC = () => {
         totalRecords={data.length} 
         currentPage={currentPage} 
         pageSize={pageSize} 
-        bordered={false} 
         onPageChange={(p, s) => { setCurrentPage(p); setPageSize(s); }} 
       />
       
