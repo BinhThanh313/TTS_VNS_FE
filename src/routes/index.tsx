@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import MainLayout from '../components/MainLayout';
-import Login from '../pages/Login';
-import ProvincePage from '../pages/Province';
-import DistrictPage from '../pages/District';
-import WardPage from '../pages/Ward';
-import RevenueReport from '../pages/RevenueReport'; 
+import MainLayout from '../components/layouts/MainLayout';
+import Login from '../pages/auth/Login';
+import ProvincePage from '../pages/category/Province/Province';
+import DistrictPage from '../pages/category/District/District';
+import WardPage from '../pages/category/Ward/Ward';
+import RevenueReport from '../pages/report/RevenueReport'; 
 
 export const router = createBrowserRouter([
   {
