@@ -1,9 +1,9 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../components/layouts/MainLayout';
 import Login from '../pages/auth/Login';
-import ProvincePage from '../pages/category/Province/Province';
-import DistrictPage from '../pages/category/District/District';
-import WardPage from '../pages/category/Ward/Ward';
+import ProvincePage from '../pages/category/province/Province';
+import DistrictPage from '../pages/category/district/District';
+import WardPage from '../pages/category/ward/Ward';
 import RevenueReport from '../pages/report/RevenueReport'; 
 
 export const router = createBrowserRouter([
