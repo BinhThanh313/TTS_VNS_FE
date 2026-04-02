@@ -5,15 +5,24 @@ import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
+// 1. Định nghĩa kiểu dữ liệu cho Form
+interface LoginValues {
+  username?: string;
+  password?: string;
+  remember?: boolean;
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const onFinish = (values: any) => {
-    // Bật hiệu ứng loading để UX mượt mà hơn
+  // Thay any bằng LoginValues
+  const onFinish = (values: LoginValues) => {
     setLoading(true);
 
-    // Giả lập thời gian chờ API (1 giây) trước khi chuyển trang
+    // TODO: Sau này sẽ thay đoạn này bằng API thực tế gọi từ Laravel
+    console.log('Dữ liệu gửi đi:', values);
+
     setTimeout(() => {
       localStorage.setItem('isLogin', 'true');
       message.success('Đăng nhập thành công!');
@@ -27,15 +36,14 @@ export default function Login() {
       justifyContent: 'center', 
       alignItems: 'center', 
       height: '100vh', 
-      // Đổi nền gradient sang trọng, đồng bộ với màu #1d39c4 của Header
       background: 'linear-gradient(135deg, #1d39c4 0%, #5b8ff9 100%)' 
     }}>
       <Card 
         style={{ 
           width: '100%', 
-          maxWidth: 420, // Hơi rộng ra một chút cho thoáng
-          borderRadius: 16, // Bo góc mềm mại
-          boxShadow: '0 15px 35px rgba(0,0,0,0.2)', // Đổ bóng nổi bật
+          maxWidth: 420, 
+          borderRadius: 16, 
+          boxShadow: '0 15px 35px rgba(0,0,0,0.2)', 
           border: 'none'
         }}
         styles={{ body: { padding: '40px 32px' } }}
@@ -54,7 +62,12 @@ export default function Login() {
         </div>
 
         {/* FORM ĐĂNG NHẬP */}
-        <Form layout="vertical" onFinish={onFinish} size="large">
+        <Form 
+          layout="vertical" 
+          onFinish={onFinish} 
+          size="large"
+          initialValues={{ remember: false }} // 2. Thêm giá trị khởi tạo cho checkbox
+        >
           <Form.Item 
             name="username" 
             rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
@@ -80,7 +93,16 @@ export default function Login() {
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Ghi nhớ mật khẩu</Checkbox>
             </Form.Item>
-            <a style={{ color: '#1d39c4', fontWeight: 500 }} href="#">Quên mật khẩu?</a>
+            <a 
+              style={{ color: '#1d39c4', fontWeight: 500 }} 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault(); // 3. Ngăn giật trang khi click vào link trống
+                message.info('Tính năng đang được phát triển!');
+              }}
+            >
+              Quên mật khẩu?
+            </a>
           </div>
 
           <Form.Item style={{ marginBottom: 0 }}>
@@ -88,7 +110,7 @@ export default function Login() {
               type="primary" 
               htmlType="submit" 
               block 
-              loading={loading} // Trạng thái loading
+              loading={loading}
               style={{ background: '#1d39c4', height: 44, fontSize: 16, borderRadius: 8 }}
             >
               Đăng nhập
