@@ -30,7 +30,7 @@ export const DistrictEditModal: React.FC<Props> = ({ open, onClose, onSave, init
       open={open}
       onOk={handleOk}
       onCancel={onClose}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form form={form} layout="vertical">
         <Form.Item name="provinceName" label="Tỉnh/ Thành phố" rules={[{ required: true }]}>
