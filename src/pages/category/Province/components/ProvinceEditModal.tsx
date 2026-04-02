@@ -12,12 +12,9 @@ interface Props {
 export const ProvinceEditModal: React.FC<Props> = ({ open, onClose, onSave, initialValues }) => {
   const [form] = Form.useForm();
 
-  // Mỗi khi initialValues thay đổi (khi nhấn bút chì dòng khác), cập nhật lại form
   useEffect(() => {
     if (open && initialValues) {
       form.setFieldsValue(initialValues);
-    } else {
-      form.resetFields();
     }
   }, [open, initialValues, form]);
 
@@ -39,7 +36,7 @@ export const ProvinceEditModal: React.FC<Props> = ({ open, onClose, onSave, init
       onCancel={onClose}
       okText="Lưu lại"
       cancelText="Hủy"
-      destroyOnClose
+      destroyOnHidden
     >
       <Form form={form} layout="vertical" name="edit_province">
         <Form.Item

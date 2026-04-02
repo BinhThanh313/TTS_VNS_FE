@@ -25,7 +25,7 @@ export const WardEditModal: React.FC<Props> = ({ open, onClose, onSave, initialV
   };
 
   return (
-    <Modal title="Cập nhật Xã/ Phường" open={open} onOk={handleOk} onCancel={onClose} destroyOnClose>
+    <Modal title="Cập nhật Xã/ Phường" open={open} onOk={handleOk} onCancel={onClose} destroyOnHidden>
       <Form form={form} layout="vertical">
         <Form.Item name="districtName" label="Quận/ Huyện" rules={[{ required: true }]}>
           <Select placeholder="Chọn Quận/ Huyện">
