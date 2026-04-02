@@ -1,203 +1,104 @@
-import { useState } from 'react';
-import { Table, Button, Input, Space, Select, Tooltip, Upload, message, Modal, Form } from 'antd';
-import { SearchOutlined, ImportOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import ExcelJS from 'exceljs';
+import React, { useState } from 'react';
+import { Button, Input, Select, Form, Space, Tooltip, Modal, message } from 'antd';
+import { SearchOutlined, ImportOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { DataTable } from '@/components/common/DataTable';
+import { WardImportModal } from './components/WardImportModal';
+import { WardEditModal } from './components/WardEditModal';
 import '../styles/Category.scss';
 
-interface WardType {
-  key: string;
-  stt: number;
-  tenHuyen: string;
-  maXa: string;
-  tenXa: string;
+const { confirm } = Modal;
+
+export interface IWard {
+  id: string | number;
+  districtName: string;
+  code: string;
+  name: string;
 }
 
-const mockData: WardType[] = [
-  { key: '1', stt: 1, tenHuyen: 'Ba Đình', maXa: '4', tenXa: 'Phường Ba Đình' },
-  { key: '2', stt: 2, tenHuyen: 'Ba Đình', maXa: '277', tenXa: 'Phường Bạch Mai' },
-  { key: '3', stt: 3, tenHuyen: 'Hoàn Kiếm', maXa: '10', tenXa: 'Phường Tràng Tiền' },
-  { key: '4', stt: 4, tenHuyen: 'Ba Đình', maXa: '5', tenXa: 'Phường Kim Mã' },
-  { key: '5', stt: 5, tenHuyen: 'Ba Đình', maXa: '6', tenXa: 'Phường Ngọc Hà' },
-  { key: '6', stt: 6, tenHuyen: 'Ba Đình', maXa: '7', tenXa: 'Phường Đội Cấn' },
-  { key: '7', stt: 7, tenHuyen: 'Hoàn Kiếm', maXa: '11', tenXa: 'Phường Hàng Bạc' },
-  { key: '8', stt: 8, tenHuyen: 'Hoàn Kiếm', maXa: '12', tenXa: 'Phường Hàng Đào' },
-  { key: '9', stt: 9, tenHuyen: 'Hoàn Kiếm', maXa: '13', tenXa: 'Phường Hàng Gai' },
-  { key: '10', stt: 10, tenHuyen: 'Đống Đa', maXa: '20', tenXa: 'Phường Láng Hạ' },
-  { key: '11', stt: 11, tenHuyen: 'Đống Đa', maXa: '21', tenXa: 'Phường Khâm Thiên' },
-  { key: '12', stt: 12, tenHuyen: 'Đống Đa', maXa: '22', tenXa: 'Phường Trung Liệt' },
-  { key: '13', stt: 13, tenHuyen: 'Hai Bà Trưng', maXa: '30', tenXa: 'Phường Bách Khoa' },
-  { key: '14', stt: 14, tenHuyen: 'Hai Bà Trưng', maXa: '31', tenXa: 'Phường Thanh Nhàn' },
-  { key: '15', stt: 15, tenHuyen: 'Hai Bà Trưng', maXa: '32', tenXa: 'Phường Quỳnh Mai' },
-  { key: '16', stt: 16, tenHuyen: 'Cầu Giấy', maXa: '40', tenXa: 'Phường Dịch Vọng' },
-  { key: '17', stt: 17, tenHuyen: 'Cầu Giấy', maXa: '41', tenXa: 'Phường Nghĩa Tân' },
-  { key: '18', stt: 18, tenHuyen: 'Cầu Giấy', maXa: '42', tenXa: 'Phường Mai Dịch' },
-  { key: '19', stt: 19, tenHuyen: 'Thanh Xuân', maXa: '50', tenXa: 'Phường Nhân Chính' },
-  { key: '20', stt: 20, tenHuyen: 'Thanh Xuân', maXa: '51', tenXa: 'Phường Khương Trung' },
-  { key: '21', stt: 21, tenHuyen: 'Thanh Xuân', maXa: '52', tenXa: 'Phường Khương Mai' },
-  { key: '22', stt: 22, tenHuyen: 'Long Biên', maXa: '60', tenXa: 'Phường Bồ Đề' },
-  { key: '23', stt: 23, tenHuyen: 'Long Biên', maXa: '61', tenXa: 'Phường Gia Thụy' },
+const mockWards: IWard[] = [
+  { id: 1, districtName: 'Ba Đình', code: '001', name: 'Phường Phúc Xá' },
+  { id: 2, districtName: 'Ba Đình', code: '004', name: 'Phường Trúc Bạch' },
+  { id: 3, districtName: 'Cầu Giấy', code: '040', name: 'Phường Dịch Vọng' },
 ];
 
-export default function WardPage() {
-  const [data, setData] = useState<WardType[]>(mockData);
-  const [selectedDistrictForImport, setSelectedDistrictForImport] = useState<string | null>(null);
-  
-  const [searchDistrict, setSearchDistrict] = useState<string | undefined>(undefined);
-  const [searchName, setSearchName] = useState<string>('');
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<WardType | null>(null);
+export const Ward: React.FC = () => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<IWard | null>(null);
   const [form] = Form.useForm();
+  const [data, setData] = useState<IWard[]>(mockWards);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleEdit = (record: WardType) => {
+  const handleEdit = (record: IWard) => {
     setEditingRecord(record);
-    form.setFieldsValue({
-      tenHuyen: record.tenHuyen,
-      maXa: record.maXa,
-      tenXa: record.tenXa,
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (updatedRecord: IWard) => {
+    setData(prev => prev.map(item => item.id === updatedRecord.id ? updatedRecord : item));
+    message.success('Cập nhật Xã/Phường thành công!');
+  };
+
+  const handleDelete = (id: string | number) => {
+    confirm({
+      title: 'Xác nhận xóa',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Bạn có chắc chắn muốn xóa xã/phường này không?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Hủy',
+      onOk() {
+        setData(prev => prev.filter(item => item.id !== id));
+        message.success('Xóa thành công');
+      },
     });
-    setIsModalOpen(true);
   };
 
-  const handleUpdate = (values: any) => {
-    const newData = data.map((item) => 
-      item.maXa === editingRecord?.maXa 
-        ? { ...item, tenXa: values.tenXa, tenHuyen: values.tenHuyen } 
-        : item
-    );
-    setData(newData);
-    message.success('Cập nhật thông tin xã/phường thành công!');
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setEditingRecord(null);
-    form.resetFields();
-  };
-
-  const handleDelete = (maXa: string) => {
-    setData(data.filter(item => item.maXa !== maXa));
-    message.success('Đã xóa xã/phường thành công!');
-  };
-
-  const handleSearch = () => {
-    const filteredData = mockData.filter((item) => {
-      const matchDistrict = searchDistrict ? item.tenHuyen === searchDistrict : true;
-      const matchName = item.tenXa.toLowerCase().includes(searchName.toLowerCase());
+  const handleSearch = (values: any) => {
+    const { districtId, name } = values;
+    const filteredData = mockWards.filter((item) => {
+      const matchDistrict = !districtId || 
+        (districtId === 'BD' && item.districtName === 'Ba Đình') ||
+        (districtId === 'CG' && item.districtName === 'Cầu Giấy');
+      const matchName = !name || item.name.toLowerCase().includes(name.toLowerCase());
       return matchDistrict && matchName;
     });
     setData(filteredData);
+    setCurrentPage(1); 
   };
 
-  // --- HÀM IMPORT ĐÃ ĐƯỢC CHUẨN HÓA ---
-  const handleImport = (file: File) => {
-    if (!selectedDistrictForImport) {
-      message.warning('Vui lòng chọn Huyện/Thị xã ở bộ lọc trước khi import file!');
-      return Upload.LIST_IGNORE;
-    }
-
-    const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
-    if (!isExcel) {
-      message.error('Chỉ hỗ trợ định dạng file Excel (.xlsx, .xls)!');
-      return Upload.LIST_IGNORE;
-    }
-
-    // Đưa async vào một hàm con chạy ngầm
-    const processFile = async () => {
-      try {
-        const buffer = await file.arrayBuffer();
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(buffer);
-        
-        const worksheet = workbook.getWorksheet(1);
-        if (!worksheet) {
-          message.error('File Excel không có dữ liệu!');
-          return;
-        }
-
-        const importedData: WardType[] = [];
-        const timestamp = Date.now();
-
-        // Hàm an toàn để lấy dữ liệu từ ô (chống Crash từ ExcelJS)
-        const getSafeCellValue = (cell: ExcelJS.Cell) => {
-          if (!cell || cell.value === null || cell.value === undefined) return '';
-          try {
-            if (typeof cell.value === 'object') {
-              if ('result' in cell.value) {
-                return (cell.value.result || '').toString().trim();
-              }
-              return cell.text ? cell.text.trim() : '';
-            }
-            return cell.value.toString().trim();
-          } catch (e) {
-            return ''; 
-          }
-        };
-
-        worksheet.eachRow((row, rowNumber) => {
-          if (rowNumber > 1) { 
-            // Cột 1 = Mã Xã, Cột 2 = Tên Xã
-            const maXa = getSafeCellValue(row.getCell(1));
-            const tenXa = getSafeCellValue(row.getCell(2));
-            
-            if (maXa && tenXa) {
-              importedData.push({
-                key: `${timestamp}-${rowNumber}`,
-                stt: 0, // Sẽ được cập nhật chính xác sau
-                tenHuyen: selectedDistrictForImport,
-                maXa: maXa,
-                tenXa: tenXa,
-              });
-            }
-          }
-        });
-
-        if (importedData.length === 0) {
-          message.warning('Không tìm thấy dữ liệu hợp lệ trong file!');
-          return;
-        }
-
-        // Cập nhật State một cách an toàn
-        setData((prevData) => {
-          const startSTT = prevData.length + 1;
-          const finalImportedData = importedData.map((item, index) => ({
-            ...item,
-            stt: startSTT + index
-          }));
-          return [...prevData, ...finalImportedData];
-        });
-
-        message.success(`Đã import thành công ${importedData.length} Xã/Phường!`);
-        
-      } catch (error) {
-        console.error("Lỗi Import:", error);
-        message.error('Đã xảy ra lỗi khi đọc file Excel. Vui lòng kiểm tra lại định dạng!');
-      }
-    };
-
-    // Thực thi
-    processFile();
-
-    // Trả về false ngay để chặn Ant Design tự động upload
-    return false; 
-  };
-
-  const columns: ColumnsType<WardType> = [
-    { title: 'STT', dataIndex: 'stt', align: 'center', width: 80 },
-    { title: 'Tên huyện/thị xã', dataIndex: 'tenHuyen' },
-    { title: 'Mã xã/phường', dataIndex: 'maXa' },
-    { title: 'Tên xã/phường', dataIndex: 'tenXa' },
+  const columns = [
+    { 
+      title: 'STT', 
+      width: 60, 
+      align: 'center' as const, 
+      render: (_: any, __: any, i: number) => (currentPage - 1) * pageSize + i + 1 
+    },
+    { title: 'Quận/ Huyện', dataIndex: 'districtName', key: 'districtName' },
+    { title: 'Mã Xã/ Phường', dataIndex: 'code', width: 150 },
+    { title: 'Tên Xã/ Phường', dataIndex: 'name' },
     {
-      title: 'Tác vụ', align: 'center', width: 120,
-      render: (_, record) => (
-        <Space>
+      title: 'Tác vụ',
+      key: 'action',
+      align: 'left' as const, // Căn trái theo yêu cầu [cite: 33]
+      width: 100,
+      render: (_: any, record: IWard) => (
+        <Space size="small">
           <Tooltip title="Cập nhật">
-            <Button type="text" icon={<EditOutlined style={{ color: '#1677ff' }} />} onClick={() => handleEdit(record)} />
+            <Button 
+              type="text" 
+              icon={<EditOutlined style={{ color: '#1890ff' }} />} 
+              onClick={() => handleEdit(record)} 
+            />
           </Tooltip>
           <Tooltip title="Xóa">
-            <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.maXa)}/>
+            <Button 
+              type="text" 
+              danger 
+              icon={<DeleteOutlined />} 
+              onClick={() => handleDelete(record.id)} 
+            />
           </Tooltip>
         </Space>
       ),
@@ -205,99 +106,59 @@ export default function WardPage() {
   ];
 
   return (
-    <div className="category-wrapper">  
-      <div className="filter-section">
-        <div className="filter-row">
-          <div className="filter-item">
-            <div className="filter-label">Huyện/Thị xã</div>
-            <Select 
-              showSearch 
-              allowClear 
-              placeholder="Chọn huyện/thị xã" 
-              style={{ width: '100%' }} 
-              options={[
-                { value: 'Ba Đình', label: 'Ba Đình' }, 
-                { value: 'Hoàn Kiếm', label: 'Hoàn Kiếm' },
-                { value: 'Đống Đa', label: 'Đống Đa' },
-                { value: 'Hai Bà Trưng', label: 'Hai Bà Trưng' },
-                { value: 'Cầu Giấy', label: 'Cầu Giấy' },
-                { value: 'Thanh Xuân', label: 'Thanh Xuân' },
-                { value: 'Long Biên', label: 'Long Biên' },
-              ]} 
-              onChange={(val) => { 
-                setSearchDistrict(val); 
-                setSelectedDistrictForImport(val); 
-              }}
-            />
+    <div className="category-wrapper">
+      <Form form={form} layout="vertical" onFinish={handleSearch}>
+        <div className="filter-section">
+          <div className="filter-row">
+            <div className="filter-item">
+              <div className="filter-label">Quận/ Huyện</div>
+              <Form.Item name="districtId" style={{ marginBottom: 0 }}>
+                <Select placeholder="-- Chọn Quận/Huyện --" allowClear showSearch>
+                  <Select.Option value="BD">Ba Đình</Select.Option>
+                  <Select.Option value="CG">Cầu Giấy</Select.Option>
+                </Select>
+              </Form.Item>
+            </div>
+            <div className="filter-item">
+              <div className="filter-label">Tên Xã/ Phường</div>
+              <Form.Item name="name" style={{ marginBottom: 0 }}>
+                <Input placeholder="Nhập tên..." maxLength={250} allowClear />
+              </Form.Item>
+            </div>
           </div>
-          <div className="filter-item">
-            <div className="filter-label">Tên xã/phường</div>
-            <Input 
-              placeholder="Nhập tên xã/phường" 
-              value={searchName} 
-              onChange={(e) => setSearchName(e.target.value)} 
-              onPressEnter={handleSearch} 
-            />
+          <div className="action-row">
+            <Button icon={<ImportOutlined />} onClick={() => setIsModalOpen(true)}>Import file</Button>
+            <Button type="primary" icon={<SearchOutlined />} htmlType="submit">Tìm kiếm</Button>
           </div>
         </div>
-        <div className="action-row">
-          {/* Cập nhật beforeUpload truyền trực tiếp hàm */}
-          <Upload beforeUpload={handleImport} showUploadList={false} accept=".xls,.xlsx">
-            <Button icon={<ImportOutlined />}>Import file</Button>
-          </Upload>
-          <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</Button>
-        </div>
-      </div>
+      </Form>
 
-      <Table 
+      <DataTable 
         columns={columns} 
         dataSource={data} 
-        pagination={{ defaultPageSize: 15, showSizeChanger: true }} 
-        locale={{ emptyText: 'Không có bản ghi nào thỏa mãn điều kiện tìm kiếm' }}
+        totalRecords={data.length} 
+        currentPage={currentPage} 
+        pageSize={pageSize} 
+        bordered={false} 
+        onPageChange={(p, s) => { setCurrentPage(p); setPageSize(s); }} 
       />
 
-      <Modal 
-        title="Cập nhật Xã/Phường" 
+      <WardEditModal 
+        open={isEditModalOpen} 
+        initialValues={editingRecord}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveEdit}
+      />
+      
+      <WardImportModal 
         open={isModalOpen} 
-        onOk={() => form.submit()} 
-        onCancel={handleCancel} 
-        okText="Lưu lại" 
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item 
-            label="Huyện/Thị xã" 
-            name="tenHuyen" 
-            rules={[{ required: true, message: 'Vui lòng chọn huyện/thị xã!' }]}
-          >
-            <Select 
-              showSearch 
-              placeholder="Chọn huyện/thị xã" 
-              options={[
-                { value: 'Ba Đình', label: 'Ba Đình' }, 
-                { value: 'Hoàn Kiếm', label: 'Hoàn Kiếm' },
-                { value: 'Đống Đa', label: 'Đống Đa' },
-                { value: 'Hai Bà Trưng', label: 'Hai Bà Trưng' },
-              ]} 
-            />
-          </Form.Item>
-
-          <Form.Item label="Mã xã/phường" name="maXa">
-            <Input disabled placeholder="Mã xã/phường" />
-          </Form.Item>
-          
-          <Form.Item 
-            label="Tên xã/phường" 
-            name="tenXa" 
-            rules={[
-              { required: true, message: 'Vui lòng nhập tên xã/phường!' }, 
-              { max: 250, message: 'Không được vượt quá 250 ký tự!' }
-            ]}
-          >
-            <Input placeholder="Nhập tên xã/phường" />
-          </Form.Item>
-        </Form>
-      </Modal>
+        onClose={() => setIsModalOpen(false)} 
+        onSuccess={(importedData) => {
+          if (importedData) {
+             setData(prev => [...importedData, ...prev]);
+          }
+        }} 
+      />
     </div>
   );
-}
+};

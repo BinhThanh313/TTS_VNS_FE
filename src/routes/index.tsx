@@ -1,10 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import MainLayout from '../components/layouts/MainLayout';
-import Login from '../pages/auth/Login';
-import ProvincePage from '../pages/category/province/Province';
-import DistrictPage from '../pages/category/district/District';
-import WardPage from '../pages/category/ward/Ward';
-import RevenueReport from '../pages/report/RevenueReport'; 
+// Sử dụng @/ để trỏ thẳng vào thư mục src
+import MainLayout from '@/components/layouts/MainLayout';
+import Login from '@/pages/auth/Login'; 
+import {Province } from '@/pages/category/province/Province';
+import { District } from '@/pages/category/district/District';
+import { Ward }from '@/pages/category/ward/Ward';
+import RevenueReport from '@/pages/report/RevenueReport'; 
 
 export const router = createBrowserRouter([
   {
@@ -17,16 +18,18 @@ export const router = createBrowserRouter([
     children: [
       // Mặc định khi vào trang chủ (/) sẽ tự động chuyển hướng sang tỉnh/thành phố
       { index: true, element: <Navigate to="/province" replace /> },
-      { path: 'province', element: <ProvincePage /> },
-      { path: 'district', element: <DistrictPage /> },
-      { path: 'ward', element: <WardPage /> },
       
-      // 2. KHAI BÁO THÊM ĐƯỜNG DẪN CHO TRANG BÁO CÁO
+      // Đường dẫn đã được chuẩn hóa theo folder chữ thường
+      { path: 'province', element: <Province /> },
+      { path: 'district', element: <District /> },
+      { path: 'ward', element: <Ward /> },
+      
+      // Trang báo cáo
       { path: 'revenue', element: <RevenueReport /> }, 
     ],
   },
   {
-    // Đường dẫn "rác" (không tồn tại) sẽ bị đá về trang đăng nhập
+    // Đường dẫn không tồn tại sẽ bị đẩy về trang đăng nhập hoặc trang chủ
     path: '*',
     element: <Navigate to="/login" replace />,
   },
