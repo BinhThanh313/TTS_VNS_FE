@@ -1,8 +1,6 @@
-// src/pages/report/RevenueReport.tsx
-import React from 'react';
-import { DatePicker, Button, Tabs, Space, Typography } from 'antd';
+import { DatePicker, Tabs, Space, Typography } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
-import { DataTable } from '@/components/common/DataTable';
+import { DataTable, AppButton } from '@/components/common'; // Dùng chung component common
 import { useRevenueReport } from './useRevenueReport';
 import { RevenueCharts } from './components/RevenueCharts';
 import { mockTableDoiTuong, mockTableHTTT, columnsDoiTuong, columnsHTTT } from './constants';
@@ -22,7 +20,7 @@ export default function RevenueReport() {
     <div style={{ padding: '0 24px 24px 24px', background: '#fff', minHeight: '100%' }}>
       {/* HEADER TÌM KIẾM */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid #f0f0f0' }}>
-        <Title level={3} style={{ margin: 0 }}>Doanh thu theo ngày</Title>
+        <Title level={2} style={{ margin: 0 }}>Doanh thu theo ngày</Title>
         <Space>
           <DatePicker 
             ref={fromDateRef}
@@ -46,7 +44,7 @@ export default function RevenueReport() {
             }}
             allowClear={false}
           />
-          <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</Button>
+          <AppButton type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</AppButton>
         </Space>
       </div>
 
@@ -55,9 +53,6 @@ export default function RevenueReport() {
         activeKey={activeTab} 
         onChange={setActiveTab} 
         style={{ marginTop: 16 }}
-        tabBarExtraContent={
-          activeTab !== '1' && <Button type="primary" icon={<DownloadOutlined />}>Xuất Excel</Button>
-        }
         items={[
           { 
             key: '1', 
@@ -67,12 +62,31 @@ export default function RevenueReport() {
           { 
             key: '2', 
             label: 'Đối tượng', 
-            children: <DataTable columns={columnsDoiTuong} dataSource={mockTableDoiTuong} bordered={true} /> 
+            children: (
+              <div style={{ paddingTop: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+                  <AppButton type="primary" icon={<DownloadOutlined />} style={{ background: '#1890ff' }}>
+                    Xuất Excel
+                  </AppButton>
+                </div>
+                <DataTable columns={columnsDoiTuong} dataSource={mockTableDoiTuong} bordered={true} />
+              </div>
+            )
           },
           { 
             key: '3', 
             label: 'Hình thức thanh toán', 
-            children: <DataTable columns={columnsHTTT} dataSource={mockTableHTTT} bordered={true} /> 
+            children: (
+              <div style={{ paddingTop: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+                  <AppButton type="primary" icon={<DownloadOutlined />} style={{ background: '#1890ff' }}>
+                    Xuất Excel
+                  </AppButton>
+                </div>
+                {/* Bắt buộc bordered={true} để hiện rõ cấu trúc bảng lồng nhau */}
+                <DataTable columns={columnsHTTT} dataSource={mockTableHTTT} bordered={true} />
+              </div>
+            )
           },
         ]}
       />

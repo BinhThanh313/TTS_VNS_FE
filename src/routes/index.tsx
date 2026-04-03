@@ -6,6 +6,7 @@ import {Province } from '@/pages/category/province/Province';
 import { District } from '@/pages/category/district/District';
 import { Ward }from '@/pages/category/ward/Ward';
 import RevenueReport from '@/pages/report/RevenueReport'; 
+import { ClinicService } from '@/pages/category/ClinicService/ClinicService';
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
       { path: 'ward', element: <Ward /> },
       
       // Trang báo cáo
+      { path: 'clinic-service', element: <ClinicService /> },
       { path: 'revenue', element: <RevenueReport /> }, 
     ],
   },

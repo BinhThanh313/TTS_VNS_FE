@@ -1,138 +1,47 @@
 import React, { useState } from 'react';
-import { Modal, Form, Select, Upload, message } from 'antd';
+import { Form, Select, Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
-import ExcelJS from 'exceljs';
+import { AppModal } from '@/components/common';
+import { parseWardExcel } from '../utils/excelParser';
 import type { IWard } from '@/types/category'; 
 
 const { Dragger } = Upload;
-
-interface Props {
-  open: boolean;
-  onClose: () => void;
-  onSuccess: (data: IWard[]) => void;
-}
+interface Props { open: boolean; onClose: () => void; onSuccess: (data: IWard[]) => void; }
 
 export const WardImportModal: React.FC<Props> = ({ open, onClose, onSuccess }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  // Hàm lấy giá trị ô an toàn (chống lỗi toString của null)
-  const getSafeValue = (row: any, colIndex: number) => {
-    const cell = row.getCell(colIndex);
-    if (!cell || cell.value === null || cell.value === undefined) return "";
-    
-    // Nếu là ô chứa công thức, lấy kết quả của công thức
-    if (typeof cell.value === 'object' && 'result' in cell.value) {
-      return cell.value.result?.toString().trim() || "";
-    }
-    
-    // Mọi trường hợp khác, chuyển về string và trim khoảng trắng
-    return cell.value.toString().trim();
-  };
-
   const handleImport = async () => {
     try {
       const values = await form.validateFields();
       if (fileList.length === 0) return message.error('Vui lòng chọn file!');
-
       setUploading(true);
+      const rawFile = (fileList[0].originFileObj || fileList[0]) as unknown as File;
+      const districtMap: Record<string, string> = { 'BD': 'Ba Đình', 'CG': 'Cầu Giấy' };
+      
+      const importedData = await parseWardExcel(rawFile, districtMap[values.districtId] || 'Không xác định');
 
-      const fileObj = fileList[0];
-      const rawFile = (fileObj.originFileObj || fileObj) as unknown as File;
-
-      const buffer = await rawFile.arrayBuffer();
-      const workbook = new ExcelJS.Workbook();
-      await workbook.xlsx.load(buffer);
-      const worksheet = workbook.getWorksheet(1);
-
-      const importedData: IWard[] = [];
-      const timestamp = Date.now();
-
-      // Ánh xạ ID huyện sang tên hiển thị (Có thể mở rộng thêm)
-      const districtMap: Record<string, string> = {
-        'BD': 'Ba Đình',
-        'CG': 'Cầu Giấy'
-      };
-      const selectedDistrictName = districtMap[values.districtId] || 'Không xác định';
-
-      worksheet?.eachRow((row, rowNumber) => {
-        if (rowNumber > 1) { // Bỏ qua tiêu đề
-          const maXa = getSafeValue(row, 1);
-          const tenXa = getSafeValue(row, 2);
-
-          if (maXa !== "" && tenXa !== "") {
-            importedData.push({
-              id: `ward-${timestamp}-${rowNumber}`,
-              districtName: selectedDistrictName,
-              code: maXa,
-              name: tenXa,
-            });
-          }
-        }
-      });
-
-      if (importedData.length === 0) {
-        message.warning('File không có dữ liệu hoặc định dạng không đúng!');
-      } else {
-        onSuccess(importedData);
-        message.success(`Đã import thành công ${importedData.length} Xã/Phường!`);
-        handleClose();
-      }
-    } catch (error) {
-      console.error("Lỗi đọc file chi tiết:", error);
-      message.error('Lỗi khi xử lý file Excel. Vui lòng kiểm tra lại định dạng!');
-    } finally {
-      setUploading(false);
-    }
+      if (importedData.length === 0) { message.warning('File không có dữ liệu!'); } 
+      else { onSuccess(importedData); message.success('Import thành công!'); handleClose(); }
+    } catch (error) { message.error('Lỗi định dạng!'); } finally { setUploading(false); }
   };
 
-  const handleClose = () => {
-    setFileList([]);
-    form.resetFields();
-    onClose();
-  };
+  const handleClose = () => { setFileList([]); form.resetFields(); onClose(); };
 
   return (
-    <Modal 
-      title="Import danh sách Xã/ Phường" 
-      open={open} 
-      onOk={handleImport} 
-      onCancel={handleClose} 
-      confirmLoading={uploading}
-      okText="Import"
-      cancelText="Hủy"
-      destroyOnHidden
-    >
+    <AppModal title="Import danh sách Xã/ Phường" open={open} onOk={handleImport} onCancel={handleClose} confirmLoading={uploading} okText="Import">
       <Form form={form} layout="vertical">
-        <Form.Item 
-          name="districtId" 
-          label="Chọn Huyện/ Thị xã cần thêm" 
-          rules={[{ required: true, message: 'Bắt buộc chọn Huyện!' }]}
-        >
-          <Select placeholder="-- Chọn Quận/Huyện --">
-            <Select.Option value="BD">Ba Đình</Select.Option>
-            <Select.Option value="CG">Cầu Giấy</Select.Option>
-          </Select>
-        </Form.Item>
-
+        <Form.Item name="districtId" label="Chọn Huyện/ Thị xã" rules={[{ required: true }]}><Select><Select.Option value="BD">Ba Đình</Select.Option><Select.Option value="CG">Cầu Giấy</Select.Option></Select></Form.Item>
         <Form.Item label="File import (.xlsx)" required>
-          <Dragger 
-            accept=".xlsx"
-            maxCount={1}
-            beforeUpload={(file) => {
-              setFileList([file]);
-              return false;
-            }} 
-            fileList={fileList}
-            onRemove={() => setFileList([])}
-          >
+          <Dragger accept=".xlsx" maxCount={1} beforeUpload={(file) => { setFileList([file]); return false; }} fileList={fileList} onRemove={() => setFileList([])}>
             <p className="ant-upload-drag-icon"><InboxOutlined /></p>
-            <p className="ant-upload-text">Nhấn hoặc kéo thả file vào đây</p>
+            <p className="ant-upload-text">Nhấn hoặc kéo thả file</p>
           </Dragger>
         </Form.Item>
       </Form>
-    </Modal>
+    </AppModal>
   );
 };

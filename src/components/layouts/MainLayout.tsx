@@ -1,6 +1,6 @@
 import { Layout, Menu, Input, Dropdown } from 'antd';
 import { useNavigate, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { GlobalOutlined, HomeOutlined, EnvironmentOutlined, BarChartOutlined, LogoutOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { GlobalOutlined, HomeOutlined, EnvironmentOutlined, BarChartOutlined, LogoutOutlined, SearchOutlined, UserOutlined, AppstoreOutlined  } from '@ant-design/icons';
 
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -23,6 +23,7 @@ export default function MainLayout() {
     { key: '/province', icon: <GlobalOutlined />, label: 'Tỉnh/Thành phố' },
     { key: '/district', icon: <HomeOutlined />, label: 'Huyện/thị xã' },
     { key: '/ward', icon: <EnvironmentOutlined />, label: 'Xã/phường' },
+    { key: '/clinic-service', icon: <AppstoreOutlined />, label: 'Dịch vụ phòng khám' },
   ];
 
   // Map đường dẫn thành tên Tiếng Việt cho Header
