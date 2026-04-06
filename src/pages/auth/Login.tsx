@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Button, Form, Input, Card, message, Checkbox, Typography } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Card, message, Checkbox, Typography, Divider } from 'antd';
+import { UserOutlined, LockOutlined, GoogleOutlined, GithubOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
-// 1. Định nghĩa kiểu dữ liệu cho Form
 interface LoginValues {
   username?: string;
   password?: string;
@@ -16,11 +15,8 @@ export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Thay any bằng LoginValues
   const onFinish = (values: LoginValues) => {
     setLoading(true);
-
-    // TODO: Sau này sẽ thay đoạn này bằng API thực tế gọi từ Laravel
     console.log('Dữ liệu gửi đi:', values);
 
     setTimeout(() => {
@@ -30,35 +26,50 @@ export default function Login() {
     }, 1000);
   };
 
+  const handleSocialLogin = (provider: string) => {
+    message.info(`Tính năng đăng nhập bằng ${provider} đang được phát triển!`);
+  };
+
   return (
     <div style={{ 
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center', 
-      height: '100vh', 
-      background: 'linear-gradient(135deg, #1d39c4 0%, #5b8ff9 100%)' 
+      minHeight: '100vh', 
+      // Background gradient sang trọng, hiện đại
+      background: 'linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)', 
+      padding: '20px'
     }}>
       <Card 
         style={{ 
           width: '100%', 
-          maxWidth: 420, 
-          borderRadius: 16, 
-          boxShadow: '0 15px 35px rgba(0,0,0,0.2)', 
-          border: 'none'
+          maxWidth: 440, 
+          borderRadius: 24, 
+          // Đổ bóng sâu tạo cảm giác nổi 3D
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)', 
+          border: 'none',
+          background: '#ffffff', 
         }}
-        styles={{ body: { padding: '40px 32px' } }}
+        styles={{ body: { padding: '48px 40px' } }}
       >
         {/* KHU VỰC LOGO VÀ TIÊU ĐỀ */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ 
-            width: 64, height: 64, background: '#1d39c4', borderRadius: '50%', 
-            color: '#fff', fontSize: 24, fontWeight: 'bold', lineHeight: '64px', 
-            margin: '0 auto 16px auto', boxShadow: '0 4px 10px rgba(29, 57, 196, 0.3)'
-          }}>
-            Vns
-          </div>
-          <Title level={3} style={{ margin: 0, color: '#1d39c4' }}>HỆ THỐNG QUẢN LÝ</Title>
-          <Text type="secondary">Vui lòng đăng nhập để tiếp tục</Text>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          {/* Logo Vinorsoft được nhúng trực tiếp */}
+          <img 
+            src="https://vinorsoft.com/static/media/logo3.46cde8320c717e6ab49d.png" 
+            alt="Vinorsoft Logo" 
+            style={{ 
+              height: 56, // Kích thước logo vừa vặn
+              marginBottom: 24,
+              objectFit: 'contain' 
+            }} 
+          />
+          <Title level={3} style={{ margin: 0, color: '#1f2937', fontWeight: 800, fontSize: 24 }}>
+            Chào mừng trở lại!
+          </Title>
+          <Text type="secondary" style={{ fontSize: 15, marginTop: 8, display: 'block' }}>
+            Đăng nhập để truy cập hệ thống quản lý
+          </Text>
         </div>
 
         {/* FORM ĐĂNG NHẬP */}
@@ -66,56 +77,89 @@ export default function Login() {
           layout="vertical" 
           onFinish={onFinish} 
           size="large"
-          initialValues={{ remember: false }} // 2. Thêm giá trị khởi tạo cho checkbox
+          initialValues={{ remember: true }}
         >
           <Form.Item 
             name="username" 
             rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
           >
             <Input 
-              prefix={<UserOutlined style={{ color: '#bfbfbf' }} />} 
-              placeholder="Nhập tài khoản" 
+              prefix={<UserOutlined style={{ color: '#9ca3af', marginRight: 8 }} />} 
+              placeholder="Tên đăng nhập" 
+              style={{ borderRadius: 10, padding: '10px 16px', background: '#f9fafb', border: '1px solid #e5e7eb' }}
             />
           </Form.Item>
 
           <Form.Item 
             name="password" 
             rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+            style={{ marginBottom: 16 }}
           >
             <Input.Password 
-              prefix={<LockOutlined style={{ color: '#bfbfbf' }} />} 
-              placeholder="Nhập mật khẩu" 
+              prefix={<LockOutlined style={{ color: '#9ca3af', marginRight: 8 }} />} 
+              placeholder="Mật khẩu" 
+              style={{ borderRadius: 10, padding: '10px 16px', background: '#f9fafb', border: '1px solid #e5e7eb' }}
             />
           </Form.Item>
 
           {/* DÒNG GHI NHỚ & QUÊN MẬT KHẨU */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Ghi nhớ mật khẩu</Checkbox>
+              <Checkbox><Text style={{ color: '#4b5563', fontSize: 14 }}>Ghi nhớ tôi</Text></Checkbox>
             </Form.Item>
             <a 
-              style={{ color: '#1d39c4', fontWeight: 500 }} 
+              style={{ color: '#2563eb', fontWeight: 600, fontSize: 14, transition: 'color 0.3s' }} 
               href="#" 
               onClick={(e) => {
-                e.preventDefault(); // 3. Ngăn giật trang khi click vào link trống
-                message.info('Tính năng đang được phát triển!');
+                e.preventDefault();
+                message.info('Vui lòng liên hệ Admin để cấp lại mật khẩu!');
               }}
             >
               Quên mật khẩu?
             </a>
           </div>
 
-          <Form.Item style={{ marginBottom: 0 }}>
+          <Form.Item style={{ marginBottom: 24 }}>
             <Button 
               type="primary" 
               htmlType="submit" 
               block 
               loading={loading}
-              style={{ background: '#1d39c4', height: 44, fontSize: 16, borderRadius: 8 }}
+              style={{ 
+                height: 48, 
+                fontSize: 16, 
+                borderRadius: 10, 
+                fontWeight: 600, 
+                background: '#1d39c4', // Xanh đậm Vinorsoft
+                boxShadow: '0 4px 14px 0 rgba(29, 57, 196, 0.39)' 
+              }}
             >
               Đăng nhập
             </Button>
           </Form.Item>
+
+          {/* ĐƯỜNG KẺ NGĂN CÁCH */}
+          <Divider plain style={{ margin: '20px 0', color: '#9ca3af', fontSize: 14 }}>
+            Hoặc tiếp tục với
+          </Divider>
+
+          {/* CÁC NÚT ĐĂNG NHẬP MẠNG XÃ HỘI */}
+          <div style={{ display: 'flex', gap: 16 }}>
+            <Button 
+              icon={<GoogleOutlined style={{ color: '#ea4335', fontSize: 18 }} />} 
+              style={{ flex: 1, height: 44, borderRadius: 10, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onClick={() => handleSocialLogin('Google')}
+            >
+              Google
+            </Button>
+            <Button 
+              icon={<GithubOutlined style={{ fontSize: 18 }} />} 
+              style={{ flex: 1, height: 44, borderRadius: 10, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              onClick={() => handleSocialLogin('GitHub')}
+            >
+              GitHub
+            </Button>
+          </div>
         </Form>
       </Card>
     </div>

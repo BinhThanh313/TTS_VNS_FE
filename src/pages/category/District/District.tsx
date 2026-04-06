@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form } from 'antd';
 import { useDistrict } from './hooks/useDistrict';
 import { DistrictSearchForm } from './components/DistrictSearchForm';
@@ -6,7 +6,7 @@ import { DistrictTable } from './components/DistrictTable';
 import { DistrictEditModal } from './components/DistrictEditModal';
 import { DistrictImportModal } from './components/DistrictImportModal';
 import { showConfirmDialog } from '@/components/common';
-import '../styles/Category.scss';
+import '../../styles/Category.scss';
 
 const mockData = [
   { id: 1, provinceName: 'Hà Nội', code: '001', name: 'Quận Ba Đình' },

@@ -29,7 +29,7 @@ export const columnsDoiTuong = [
   { title: 'STT', dataIndex: 'stt', align: 'center' as const, width: 80, onHeaderCell: () => ({ style: { backgroundColor: '#e6f7ff' } }) },
   { title: 'Ngày', dataIndex: 'ngay', align: 'center' as const, onHeaderCell: () => ({ style: { backgroundColor: '#e6f7ff' } }) },
   { title: 'Đối tượng', dataIndex: 'doiTuong', align: 'center' as const, onHeaderCell: () => ({ style: { backgroundColor: '#ffd8a8' } }) }, // Cam nhạt
-  { title: 'Tổng tiền', dataIndex: 'tongTien', align: 'right' as const, onHeaderCell: () => ({ style: { backgroundColor: '#e6f7ff' } }), render: formatMoney },
+  { title: 'Tổng tiền', dataIndex: 'tongTien', align: 'right' as const, onHeaderCell: () => ({ style: { backgroundColor: '#e6f7ff', textAlign: 'center' as const } }), render: formatMoney },
 ];
 
 const pinkHeader = () => ({ style: { backgroundColor: '#ffadd2', textAlign: 'center' as const } }); // Hồng nhạt cho các cột con
@@ -57,8 +57,10 @@ export const columnsHTTT = [
     ],
   },
   { 
-    title: 'Tổng tiền', dataIndex: 'tongTien', align: 'right' as const, 
-    onHeaderCell: () => ({ style: { backgroundColor: '#e6f7ff' } }), 
-    render: (val: any) => <strong>{formatMoney(val)}</strong> // Cột Tổng tiền luôn in đậm
+    title: 'Tổng tiền', 
+    dataIndex: 'tongTien', 
+    align: 'right' as const, 
+    onHeaderCell: () => ({ style: { backgroundColor: '#e6f7ff', textAlign: 'center' as const } }), // Tiêu đề ép căn giữa
+    render: (val: any) => <strong>{formatMoney(val)}</strong> 
   },
 ];

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form } from 'antd';
 import { SearchForm } from './components/SearchForm';
 import { ClinicServiceTable } from './components/ClinicServiceTable';
 import { ClinicServiceModal } from './components/ClinicServiceModal';
 import { useClinicService } from './hooks/useClinicService';
 import { mockClinicServices } from './constants'; 
-import { showConfirmDialog } from '@/components/common'; // Import từ common
-import '../styles/Category.scss';
+import { showConfirmDialog } from '@/components/common'; 
+import '../../styles/Category.scss';
 
 export const ClinicService: React.FC = () => {
   const [form] = Form.useForm();

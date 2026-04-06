@@ -1,0 +1,39 @@
+// Reset các thẻ đại diện cho trình duyệt để bung toàn màn hình
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important; // Chống bị thanh cuộn ngang khó chịu
+}
+
+#root {
+  width: 100% !important;
+  max-width: none !important; // Phá vỡ các giới hạn chiều rộng nếu có
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+// Tùy chỉnh riêng cho Header của Ant Design trong Layout này
+.main-header-custom {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px !important;
+  height: 60px !important;
+  line-height: 60px !important;
+  background-color: #1d39c4 !important;
+  
+  // Bạn có thể viết thêm các style cho logo, user info ở đây bằng SCSS nesting
+  .logo-wrapper {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+}

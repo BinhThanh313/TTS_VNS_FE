@@ -16,7 +16,7 @@ export const WardTable: React.FC<Props> = ({ data, currentPage, pageSize, onEdit
       title: 'Tác vụ', align: 'left' as const, width: 100,
       render: (_: any, record: IWard) => (
         <Space size="small">
-          <Tooltip title="Cập nhật"><AppButton type="text" icon={<EditOutlined style={{ color: '#1890ff' }} />} onClick={() => onEdit(record)} /></Tooltip>
+          <Tooltip title="Cập nhật"><AppButton type="text" icon={<EditOutlined style={{ color: '#52c41a' }} />} onClick={() => onEdit(record)} /></Tooltip>
           <Tooltip title="Xóa"><AppButton type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} /></Tooltip>
         </Space>
       ),

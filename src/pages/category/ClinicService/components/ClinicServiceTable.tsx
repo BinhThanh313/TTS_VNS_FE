@@ -28,6 +28,8 @@ export const ClinicServiceTable: React.FC<ClinicServiceTableProps> = ({
     { title: 'Nhóm dịch vụ', dataIndex: 'nhomDichVu', align: 'left' as const },
     { title: 'Nhóm DV chi tiết', dataIndex: 'chiTietNhomDichVu', align: 'left' as const },
     { title: 'ĐVT', dataIndex: 'donViTinh', align: 'left' as const },
+    { title: 'Giá DV', dataIndex: 'giaDV', align: 'right' as const, render: (val: number) => val?.toLocaleString('vi-VN') },
+    { title: 'Giá BHYT', dataIndex: 'giaBHYT', align: 'right' as const, render: (val: number) => val?.toLocaleString('vi-VN') },
     {
       title: 'Tác vụ',
       align: 'center' as const,

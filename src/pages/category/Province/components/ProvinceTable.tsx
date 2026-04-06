@@ -22,7 +22,7 @@ export const ProvinceTable: React.FC<Props> = ({ data, currentPage, pageSize, on
       title: 'Tác vụ', width: 120, align: 'left' as const,
       render: (_: any, record: IProvince) => (
         <Space size="small">
-          <Tooltip title="Cập nhật"><AppButton type="text" icon={<EditOutlined style={{ color: '#1890ff' }} />} onClick={() => onEdit(record)} /></Tooltip>
+          <Tooltip title="Cập nhật"><AppButton type="text" icon={<EditOutlined style={{ color: '#52c41a' }} />} onClick={() => onEdit(record)} /></Tooltip>
           <Tooltip title="Xóa"><AppButton type="text" danger icon={<DeleteOutlined />} onClick={() => onDelete(record.id)} /></Tooltip>
         </Space>
       ),

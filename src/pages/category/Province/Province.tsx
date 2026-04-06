@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form } from 'antd';
 import { useProvince } from './hooks/useProvince';
 import { ProvinceSearchForm } from './components/ProvinceSearchForm';
@@ -6,7 +6,7 @@ import { ProvinceTable } from './components/ProvinceTable';
 import { ProvinceEditModal } from './components/ProvinceEditModal';
 import { ProvinceImportModal } from './components/ProvinceImportModal';
 import { showConfirmDialog } from '@/components/common';
-import '../styles/Category.scss';
+import '../../styles/Category.scss';
 
 const mockData = [
   { id: 1, maTinh: '01', tenTinh: 'Thành phố Hà Nội' },

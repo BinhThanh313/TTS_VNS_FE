@@ -1,4 +1,3 @@
-import React from 'react';
 import { Form, InputNumber, Input, Row, Col, Checkbox, Space, DatePicker } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd';

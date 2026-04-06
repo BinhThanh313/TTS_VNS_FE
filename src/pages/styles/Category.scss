@@ -1,18 +1,15 @@
-// src/styles/Category.scss
-
 .category-wrapper {
   padding: 16px 24px;
   background-color: #fff;
-  height: 100%;
+  min-height: 100%; /* Sửa height thành min-height để không bị móp khi bảng ít dữ liệu */
 
-  /// Khu vực bộ lọc (Filter)
+  /* Khu vực bộ lọc (Filter) */
   .filter-section {
     display: flex;
     justify-content: space-between; /* Đẩy nhóm nhập liệu và nhóm nút bấm ra 2 mép */
     align-items: flex-end; /* Ép tất cả các phần tử nằm sát đáy trên cùng 1 đường thẳng */
     margin-bottom: 24px;
 
-    /* ĐÃ SỬA THÀNH filter-row CHO KHỚP VỚI FILE TSX */
     .filter-row {
       display: flex; /* Lệnh này ép ô Tỉnh và ô Huyện nằm ngang */
       gap: 24px; /* Khoảng cách giữa các ô nhập liệu */
@@ -36,19 +33,23 @@
     }
   }
 
-  // Tùy chỉnh Bảng (Table) giống ảnh
+  /* Tùy chỉnh Bảng (Table) giống ảnh thiết kế */
   .ant-table-wrapper {
     border: 1px solid #f0f0f0;
+    border-radius: 8px; /* Thêm bo góc nhẹ cho khung bảng nhìn hiện đại hơn */
+    overflow: hidden; /* Đảm bảo góc bo không bị trào ra ngoài */
     
+    /* ĐÃ GỘP CHUNG CSS CỦA HEADER BẢNG VÀO ĐÂY */
     .ant-table-thead > tr > th {
-      background-color: #f0f8ff !important; // Màu xanh cực nhạt
-      color: #333;
-      font-weight: 600;
+      background-color: #f0f8ff !important; /* Màu xanh cực nhạt */
+      color: #333 !important;
+      font-weight: 600 !important;
+      text-align: center !important; /* Ép căn giữa toàn bộ tiêu đề bảng */
       padding: 12px 16px;
       border-bottom: 1px solid #e8e8e8;
     }
 
-    // Phân trang dạt sang 2 bên
+    /* Phân trang dạt sang 2 bên */
     .ant-pagination {
       padding: 16px;
       margin: 0 !important;
@@ -56,7 +57,7 @@
       width: 100%;
       align-items: center;
 
-      // Đẩy dòng "Tổng số bản ghi" sang tận cùng bên trái
+      /* Đẩy dòng "Tổng số bản ghi" sang tận cùng bên trái */
       .ant-pagination-total-text {
         margin-right: auto;
         font-weight: 500;

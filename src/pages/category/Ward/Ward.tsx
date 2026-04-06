@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form } from 'antd';
 import { useWard } from './hooks/useWard';
 import { WardSearchForm } from './components/WardSearchForm';
@@ -6,7 +6,7 @@ import { WardTable } from './components/WardTable';
 import { WardEditModal } from './components/WardEditModal';
 import { WardImportModal } from './components/WardImportModal';
 import { showConfirmDialog } from '@/components/common';
-import '../styles/Category.scss';
+import '../../styles/Category.scss';
 
 const mockWards = [
   { id: 1, districtName: 'Ba Đình', code: '001', name: 'Phường Phúc Xá' },

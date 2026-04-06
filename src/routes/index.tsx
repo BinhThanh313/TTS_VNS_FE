@@ -1,5 +1,4 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-// Sử dụng @/ để trỏ thẳng vào thư mục src
 import MainLayout from '@/components/layouts/MainLayout';
 import Login from '@/pages/auth/Login'; 
 import {Province } from '@/pages/category/province/Province';

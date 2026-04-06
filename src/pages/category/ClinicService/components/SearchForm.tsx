@@ -15,17 +15,17 @@ export const SearchForm: React.FC<SearchFormProps> = ({ form, onSearch, onCreate
     <Row gutter={24}>
       <Col span={8}>
         <Form.Item label={<span style={{ fontWeight: 500 }}>Cơ sở</span>} name="coSo">
-          <Select placeholder="Chọn" allowClear />
+          <Select placeholder="Chọn" allowClear showSearch optionFilterProp="label" options={[]} />
         </Form.Item>
       </Col>
       <Col span={8}>
         <Form.Item label={<span style={{ fontWeight: 500 }}>Loại dịch vụ</span>} name="loaiDichVu">
-          <Select placeholder="Chọn" allowClear />
+          <Select placeholder="Chọn" allowClear showSearch optionFilterProp="label" options={[]} />
         </Form.Item>
       </Col>
       <Col span={8}>
         <Form.Item label={<span style={{ fontWeight: 500 }}>Nhóm dịch vụ</span>} name="nhomDichVu">
-          <Select placeholder="Chọn" allowClear />
+          <Select placeholder="Chọn" allowClear showSearch optionFilterProp="label" options={[]} />
         </Form.Item>
       </Col>
     </Row>
@@ -33,7 +33,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ form, onSearch, onCreate
     <Row gutter={24} align="bottom">
       <Col span={8}>
         <Form.Item label={<span style={{ fontWeight: 500 }}>Tên dịch vụ</span>} name="tenDichVu" style={{ marginBottom: 0 }}>
-          <Input placeholder="Nhập" allowClear />
+          <Input placeholder="Nhập" allowClear maxLength={250} />
         </Form.Item>
       </Col>
       <Col span={16} style={{ textAlign: 'right' }}>

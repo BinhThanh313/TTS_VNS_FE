@@ -44,7 +44,7 @@ export default function RevenueReport() {
             }}
             allowClear={false}
           />
-          <AppButton type="primary" icon={<SearchOutlined />} onClick={handleSearch}>Tìm kiếm</AppButton>
+          <AppButton type="primary" icon={<SearchOutlined />} style={{ background: '#1890ff' }} onClick={handleSearch}>Tìm kiếm</AppButton>
         </Space>
       </div>
 
