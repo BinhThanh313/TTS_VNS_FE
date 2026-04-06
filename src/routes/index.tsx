@@ -6,6 +6,10 @@ import { District } from '@/pages/category/district/District';
 import { Ward }from '@/pages/category/ward/Ward';
 import RevenueReport from '@/pages/report/RevenueReport'; 
 import { ClinicService } from '@/pages/category/ClinicService/ClinicService';
+import { Reception } from '@/pages/queue/Reception/Reception';
+import { DoctorScreen } from '@/pages/queue/Doctor/DoctorScreen';
+import { DisplayScreen } from '@/pages/queue/Display/DisplayScreen';
+import { AllInOneTest } from '@/pages/queue/AllInOneTest';
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +31,11 @@ export const router = createBrowserRouter([
       // Trang báo cáo
       { path: 'clinic-service', element: <ClinicService /> },
       { path: 'revenue', element: <RevenueReport /> }, 
+
+      { path: 'queue/reception', element: <Reception /> },
+      { path: 'queue/doctor', element: <DoctorScreen /> },
+      { path: 'queue/display', element: <DisplayScreen /> },
+      { path: 'queue/test-all', element: <AllInOneTest /> },
     ],
   },
   {

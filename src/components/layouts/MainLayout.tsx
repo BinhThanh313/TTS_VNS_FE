@@ -55,6 +55,10 @@ export default function MainLayout() {
     { key: '/district', icon: <HomeOutlined />, label: 'Huyện/thị xã' },
     { key: '/ward', icon: <EnvironmentOutlined />, label: 'Xã/phường' },
     { key: '/clinic-service', icon: <AppstoreOutlined />, label: 'Dịch vụ phòng khám' },
+    // { key: '/queue/reception', icon: <AppstoreOutlined />, label: 'Lễ tân cấp số' },
+    // { key: '/queue/doctor', icon: <AppstoreOutlined />, label: 'Bác sĩ gọi khám' },
+    // { key: '/queue/display', icon: <AppstoreOutlined />, label: 'Màn hình Tivi' },
+    { key: '/queue/test-all', icon: <AppstoreOutlined />, label: 'Hàng đợi khám bệnh' },
   ];
 
   const filteredMenuItems = allMenuItems.filter(item => 
@@ -67,6 +71,7 @@ export default function MainLayout() {
     '/district': 'Huyện/thị xã',
     '/ward': 'Xã/phường',
     '/clinic-service': 'Dịch vụ phòng khám',
+    '/queue/test-all': 'Hàng đợi khám bệnh',
   };
 
   return (
