@@ -21,7 +21,12 @@ export const WardEditModal: React.FC<Props> = ({ open, onClose, onSave, initialV
   return (
     <AppModal title="Cập nhật Xã/ Phường" open={open} onOk={handleOk} onCancel={onClose}>
       <Form form={form} layout="vertical">
-        <Form.Item name="districtName" label="Quận/ Huyện" rules={[{ required: true }]}><Select><Select.Option value="Ba Đình">Ba Đình</Select.Option></Select></Form.Item>
+        <Form.Item name="districtName" label="Quận/ Huyện" rules={[{ required: true }]}>
+        <Select>
+          <Select.Option value="Ba Đình">Ba Đình</Select.Option>
+          <Select.Option value="Cầu Giấy">Cầu Giấy</Select.Option>
+          </Select>
+          </Form.Item>
         <Form.Item name="code" label="Mã Xã/ Phường" rules={[{ required: true }]}><Input disabled /></Form.Item>
         <Form.Item name="name" label="Tên Xã/ Phường" rules={[{ required: true }]}><Input placeholder="Nhập tên" /></Form.Item>
       </Form>

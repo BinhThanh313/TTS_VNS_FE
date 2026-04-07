@@ -2,28 +2,33 @@ import { useState } from 'react';
 import { Button, Form, Input, Card, message, Checkbox, Typography, Divider } from 'antd';
 import { UserOutlined, LockOutlined, GoogleOutlined, GithubOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import type { FormProps } from 'antd';
+import './Login.scss'; // Import file scss vừa tạo
 
 const { Title, Text } = Typography;
 
-interface LoginValues {
+type FieldType = {
   username?: string;
   password?: string;
   remember?: boolean;
-}
+};
 
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const onFinish = (values: LoginValues) => {
+  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     setLoading(true);
-    console.log('Dữ liệu gửi đi:', values);
-
     setTimeout(() => {
       localStorage.setItem('isLogin', 'true');
       message.success('Đăng nhập thành công!');
-      navigate('/province');
+      setLoading(false);
+      navigate('/revenue');
     }, 1000);
+  };
+
+  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+    message.error('Vui lòng kiểm tra lại thông tin đăng nhập!');
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -31,130 +36,91 @@ export default function Login() {
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      minHeight: '100vh', 
-      // Background gradient sang trọng, hiện đại
-      background: 'linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%)', 
-      padding: '20px'
-    }}>
-      <Card 
-        style={{ 
-          width: '100%', 
-          maxWidth: 440, 
-          borderRadius: 24, 
-          // Đổ bóng sâu tạo cảm giác nổi 3D
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)', 
-          border: 'none',
-          background: '#ffffff', 
-        }}
-        styles={{ body: { padding: '48px 40px' } }}
-      >
-        {/* KHU VỰC LOGO VÀ TIÊU ĐỀ */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          {/* Logo Vinorsoft được nhúng trực tiếp */}
+    <div className="login-container">
+      <Card className="login-card" styles={{ body: { padding: '48px 40px' } }}>
+        <div className="login-header">
           <img 
             src="https://vinorsoft.com/static/media/logo3.46cde8320c717e6ab49d.png" 
             alt="Vinorsoft Logo" 
-            style={{ 
-              height: 56, // Kích thước logo vừa vặn
-              marginBottom: 24,
-              objectFit: 'contain' 
-            }} 
+            className="login-logo"
           />
-          <Title level={3} style={{ margin: 0, color: '#1f2937', fontWeight: 800, fontSize: 24 }}>
+          <Title level={3} className="login-title">
             Chào mừng trở lại!
           </Title>
-          <Text type="secondary" style={{ fontSize: 15, marginTop: 8, display: 'block' }}>
+          <Text type="secondary" className="login-subtitle">
             Đăng nhập để truy cập hệ thống quản lý
           </Text>
         </div>
 
-        {/* FORM ĐĂNG NHẬP */}
         <Form 
+          name="login_form" 
           layout="vertical" 
           onFinish={onFinish} 
-          size="large"
-          initialValues={{ remember: true }}
+          onFinishFailed={onFinishFailed} 
+          size="large" 
+          initialValues={{ remember: true }} 
+          autoComplete="off"
         >
-          <Form.Item 
+          <Form.Item<FieldType> 
+            label="Username" 
             name="username" 
-            rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
             <Input 
-              prefix={<UserOutlined style={{ color: '#9ca3af', marginRight: 8 }} />} 
+              prefix={<UserOutlined />} 
               placeholder="Tên đăng nhập" 
-              style={{ borderRadius: 10, padding: '10px 16px', background: '#f9fafb', border: '1px solid #e5e7eb' }}
+              className="login-input"
             />
           </Form.Item>
 
-          <Form.Item 
+          <Form.Item<FieldType> 
+            label="Password" 
             name="password" 
-            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-            style={{ marginBottom: 16 }}
+            rules={[{ required: true, message: 'Please input your password!' }]}
           >
             <Input.Password 
-              prefix={<LockOutlined style={{ color: '#9ca3af', marginRight: 8 }} />} 
+              prefix={<LockOutlined />} 
               placeholder="Mật khẩu" 
-              style={{ borderRadius: 10, padding: '10px 16px', background: '#f9fafb', border: '1px solid #e5e7eb' }}
+              className="login-input"
             />
           </Form.Item>
 
-          {/* DÒNG GHI NHỚ & QUÊN MẬT KHẨU */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox><Text style={{ color: '#4b5563', fontSize: 14 }}>Ghi nhớ tôi</Text></Checkbox>
+          <div className="login-options">
+            <Form.Item<FieldType> name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Ghi nhớ tôi</Checkbox>
             </Form.Item>
-            <a 
-              style={{ color: '#2563eb', fontWeight: 600, fontSize: 14, transition: 'color 0.3s' }} 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                message.info('Vui lòng liên hệ Admin để cấp lại mật khẩu!');
-              }}
-            >
+            <a className="forgot-password" href="/" onClick={(e) => e.preventDefault()}>
               Quên mật khẩu?
             </a>
           </div>
 
-          <Form.Item style={{ marginBottom: 24 }}>
+          <Form.Item>
             <Button 
               type="primary" 
               htmlType="submit" 
               block 
-              loading={loading}
-              style={{ 
-                height: 48, 
-                fontSize: 16, 
-                borderRadius: 10, 
-                fontWeight: 600, 
-                background: '#1d39c4', // Xanh đậm Vinorsoft
-                boxShadow: '0 4px 14px 0 rgba(29, 57, 196, 0.39)' 
-              }}
+              loading={loading} 
+              className="login-submit-btn"
             >
-              Đăng nhập
+              Submit
             </Button>
           </Form.Item>
 
-          {/* ĐƯỜNG KẺ NGĂN CÁCH */}
-          <Divider plain style={{ margin: '20px 0', color: '#9ca3af', fontSize: 14 }}>
+          <Divider plain className="social-divider">
             Hoặc tiếp tục với
           </Divider>
 
-          {/* CÁC NÚT ĐĂNG NHẬP MẠNG XÃ HỘI */}
-          <div style={{ display: 'flex', gap: 16 }}>
+          <div className="social-login-group">
             <Button 
-              icon={<GoogleOutlined style={{ color: '#ea4335', fontSize: 18 }} />} 
-              style={{ flex: 1, height: 44, borderRadius: 10, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              icon={<GoogleOutlined />} 
+              className="social-btn google-btn" 
               onClick={() => handleSocialLogin('Google')}
             >
               Google
             </Button>
             <Button 
-              icon={<GithubOutlined style={{ fontSize: 18 }} />} 
-              style={{ flex: 1, height: 44, borderRadius: 10, fontWeight: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              icon={<GithubOutlined />} 
+              className="social-btn" 
               onClick={() => handleSocialLogin('GitHub')}
             >
               GitHub

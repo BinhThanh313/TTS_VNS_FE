@@ -34,7 +34,12 @@ export const WardImportModal: React.FC<Props> = ({ open, onClose, onSuccess }) =
   return (
     <AppModal title="Import danh sách Xã/ Phường" open={open} onOk={handleImport} onCancel={handleClose} confirmLoading={uploading} okText="Import">
       <Form form={form} layout="vertical">
-        <Form.Item name="districtId" label="Chọn Huyện/ Thị xã" rules={[{ required: true }]}><Select><Select.Option value="BD">Ba Đình</Select.Option><Select.Option value="CG">Cầu Giấy</Select.Option></Select></Form.Item>
+        <Form.Item name="districtId" label="Chọn Huyện/ Thị xã" rules={[{ required: true }]}>
+          <Select>
+            <Select.Option value="BD">Ba Đình</Select.Option>
+            <Select.Option value="CG">Cầu Giấy</Select.Option>
+          </Select>
+        </Form.Item>
         <Form.Item label="File import (.xlsx)" required>
           <Dragger accept=".xlsx" maxCount={1} beforeUpload={(file) => { setFileList([file]); return false; }} fileList={fileList} onRemove={() => setFileList([])}>
             <p className="ant-upload-drag-icon"><InboxOutlined /></p>

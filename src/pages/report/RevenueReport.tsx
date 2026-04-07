@@ -22,22 +22,14 @@ export default function RevenueReport() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderBottom: '1px solid #f0f0f0' }}>
         <Title level={2} style={{ margin: 0 }}>Doanh thu theo ngày</Title>
         <Space>
-          <DatePicker 
-            ref={fromDateRef}
-            placeholder="Từ ngày" 
-            format={["DD/MM/YYYY", "DDMMYYYY"]} 
-            value={fromDate}
+          <DatePicker ref={fromDateRef} placeholder="Từ ngày" format={["DD/MM/YYYY", "DDMMYYYY"]} value={fromDate}
             onChange={(date, dateString) => {
               setFromDate(date);
               if (typeof dateString === 'string') validateDateInput(dateString, 'from');
             }}
             allowClear={false}
           />
-          <DatePicker 
-            ref={toDateRef}
-            placeholder="Đến ngày" 
-            format={["DD/MM/YYYY", "DDMMYYYY"]} 
-            value={toDate}
+          <DatePicker ref={toDateRef} placeholder="Đến ngày" format={["DD/MM/YYYY", "DDMMYYYY"]} value={toDate}
             onChange={(date, dateString) => {
               setToDate(date);
               if (typeof dateString === 'string') validateDateInput(dateString, 'to');

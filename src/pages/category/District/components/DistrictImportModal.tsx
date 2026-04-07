@@ -33,7 +33,13 @@ export const DistrictImportModal: React.FC<Props> = ({ open, onClose, onSuccess 
   return (
     <AppModal title="Import danh sách Huyện/ Thị xã" open={open} onOk={handleImport} confirmLoading={uploading} onCancel={handleClose} okText="Import">
       <Form form={form} layout="vertical">
-        <Form.Item name="provinceId" label="Tỉnh/ Thành phố" rules={[{ required: true }]}><Select><Select.Option value="HN">Hà Nội</Select.Option></Select></Form.Item>
+        <Form.Item name="provinceId" label="Tỉnh/ Thành phố" rules={[{ required: true }]}>
+          <Select placeholder="-- Chọn Tỉnh --" allowClear>
+            <Select.Option value="HN">Hà Nội</Select.Option>
+            <Select.Option value="HD">Hà Đông</Select.Option>
+            <Select.Option value="HP">Hải Phòng</Select.Option>
+          </Select>
+        </Form.Item>
         <Form.Item label="File import (.xlsx)" required>
           <Dragger accept=".xlsx" maxCount={1} beforeUpload={(file) => { setFileList([file]); return false; }} fileList={fileList} onRemove={() => setFileList([])}>
             <p className="ant-upload-drag-icon"><InboxOutlined /></p>

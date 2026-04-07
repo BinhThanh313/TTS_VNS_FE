@@ -13,7 +13,11 @@ export const DistrictSearchForm: React.FC<Props> = ({ form, onSearch, onImport }
         <div className="filter-item">
           <div className="filter-label">Tỉnh/ Thành phố</div>
           <Form.Item name="provinceId" style={{ marginBottom: 0 }}>
-            <Select placeholder="-- Chọn Tỉnh --" allowClear><Select.Option value="HN">Hà Nội</Select.Option></Select>
+            <Select placeholder="-- Chọn Tỉnh --" allowClear>
+              <Select.Option value="HN">Hà Nội</Select.Option>
+              <Select.Option value="HD">Hà Đông</Select.Option>
+              <Select.Option value="HP">Hải Phòng</Select.Option>
+            </Select>
           </Form.Item>
         </div>
         <div className="filter-item">

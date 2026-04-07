@@ -1,0 +1,92 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  padding: 20px;
+
+  .login-card {
+    width: 100%;
+    max-width: 440px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: none;
+    background: #ffffff;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 40px;
+
+    .login-logo {
+      height: 56px;
+      margin-bottom: 24px;
+      object-fit: contain;
+    }
+
+    .login-title {
+      margin: 0 !important;
+      color: #1f2937;
+      font-weight: 800;
+      font-size: 24px;
+    }
+
+    .login-subtitle {
+      font-size: 15px;
+      margin-top: 8px;
+      display: block;
+    }
+  }
+
+  .login-input {
+    border-radius: 10px;
+    background: #f9fafb;
+    
+    .ant-input-prefix {
+      color: #9ca3af;
+      margin-right: 8px;
+    }
+  }
+
+  .login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .forgot-password {
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+
+  .login-submit-btn {
+    height: 48px;
+    border-radius: 10px;
+    font-weight: 600;
+    background: #1d39c4;
+    box-shadow: 0 4px 14px 0 rgba(29, 57, 196, 0.39);
+  }
+
+  .social-divider {
+    margin: 20px 0;
+    color: #9ca3af;
+    font-size: 14px;
+  }
+
+  .social-login-group {
+    display: flex;
+    gap: 16px;
+
+    .social-btn {
+      flex: 1;
+      border-radius: 10px;
+      
+      &.google-btn .anticon {
+        color: #ea4335;
+      }
+    }
+  }
+}
