@@ -1,8 +1,6 @@
-// src/pages/report/components/RevenueCharts.tsx
-import React from 'react';
 import { Card, Row, Col, Typography, Select } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart, Pie, LabelList } from 'recharts';
-import { mockChartData, mockPieData } from '../constants';
+import { mockChartData, mockPieData } from './constants';
 
 const { Title, Text } = Typography;
 
@@ -43,8 +41,6 @@ export const RevenueCharts: React.FC<Props> = ({ paymentType, setPaymentType }) 
               iconType="square" 
               wrapperStyle={{ paddingTop: '30px' }} 
             />
-            
-            {/* THÊM LẠI LabelList ĐỂ HIỂN THỊ SỐ Ở GIỮA CỘT */}
             <Bar dataKey="baoHiem" name="Đối tượng Bảo hiểm" stackId="a" fill="#135e80">
               <LabelList dataKey="baoHiem" position="center" fill="#fff" formatter={formatCurrency} fontSize={12} fontWeight="bold" />
             </Bar>
@@ -118,7 +114,6 @@ export const RevenueCharts: React.FC<Props> = ({ paymentType, setPaymentType }) 
           <Card title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#555' }}>Doanh thu theo hình thức thanh toán<br/>(Tổng theo kỳ báo cáo)</div>}>
             <ResponsiveContainer width="100%" height={320}>
               <PieChart>
-                {/* Đã gỡ bỏ hoàn toàn thẻ <Cell> lỗi */}
                 <Pie 
                   data={mockPieData.map(item => ({ ...item, fill: item.color }))} 
                   dataKey="value" 

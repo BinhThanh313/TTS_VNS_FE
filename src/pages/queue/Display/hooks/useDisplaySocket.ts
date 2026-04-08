@@ -1,4 +1,3 @@
-// src/pages/queue/Display/hooks/useDisplaySocket.ts
 import { useEffect, useState } from 'react';
 import { useSocket } from '@/context/SocketContext';
 import { speakVietnamese } from '../utils/speech';

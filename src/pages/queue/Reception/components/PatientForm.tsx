@@ -1,5 +1,3 @@
-// src/pages/queue/Reception/components/PatientForm.tsx
-import React from 'react';
 import { Form, Input, Button } from 'antd';
 
 interface Props {

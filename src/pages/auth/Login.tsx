@@ -3,7 +3,7 @@ import { Button, Form, Input, Card, message, Checkbox, Typography, Divider } fro
 import { UserOutlined, LockOutlined, GoogleOutlined, GithubOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import type { FormProps } from 'antd';
-import './Login.scss'; // Import file scss vừa tạo
+import './Login.scss';
 
 const { Title, Text } = Typography;
 
@@ -23,7 +23,8 @@ export default function Login() {
       localStorage.setItem('isLogin', 'true');
       message.success('Đăng nhập thành công!');
       setLoading(false);
-      navigate('/revenue');
+      navigate('/'); 
+      
     }, 1000);
   };
 
@@ -48,7 +49,7 @@ export default function Login() {
             Chào mừng trở lại!
           </Title>
           <Text type="secondary" className="login-subtitle">
-            Đăng nhập để truy cập hệ thống quản lý
+            Đăng nhập để truy cập hệ thống báo cáo y tế
           </Text>
         </div>
 
@@ -102,7 +103,7 @@ export default function Login() {
               loading={loading} 
               className="login-submit-btn"
             >
-              Submit
+              Đăng nhập
             </Button>
           </Form.Item>
 

@@ -1,4 +1,3 @@
-// src/pages/queue/Reception/hooks/useReceptionSocket.ts
 import { useCallback } from 'react';
 import { message } from 'antd';
 import { useSocket } from '@/context/SocketContext';
@@ -20,7 +19,7 @@ export const useReceptionSocket = (roomId: string) => {
     
     socket.emit("add-patient", { roomId, patient: newPatient });
     message.success(`Đã cấp STT: ${newPatient.stt} cho bệnh nhân ${newPatient.name}`);
-    return true; // Trả về true nếu thành công
+    return true; 
   }, [socket, roomId]);
 
   return { addPatient };

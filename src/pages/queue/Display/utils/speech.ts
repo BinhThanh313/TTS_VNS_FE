@@ -1,4 +1,3 @@
-// src/pages/queue/Display/utils/speech.ts
 export const speakVietnamese = (text: string) => {
   try {
     const msg = new SpeechSynthesisUtterance(text);

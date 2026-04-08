@@ -1,5 +1,3 @@
-// src/pages/queue/Doctor/components/DoctorQueueList.tsx
-import React from 'react';
 import { List, Typography } from 'antd';
 
 interface Props {

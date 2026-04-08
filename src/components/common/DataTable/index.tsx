@@ -22,11 +22,12 @@ export const DataTable = <T extends object>({
   onPageChange,
   rowKey = "id",
   bordered = false, 
+  className, // 1. Lấy className từ Props ra
   ...restProps 
 }: DataTableProps<T>) => {
   return (
     <Table
-      {...restProps} // Cho phép ghi đè mọi thứ nếu cần thiết
+      {...restProps} 
       rowKey={rowKey}
       columns={columns}
       dataSource={dataSource}
@@ -41,12 +42,11 @@ export const DataTable = <T extends object>({
         onChange: (page, size) => {
           if (onPageChange) onPageChange(page, size);
         },
-        // Định dạng hiển thị tổng số bản ghi ở góc dưới bên trái 
         showTotal: (total) => `Tổng: ${total} bản ghi`,
-        position: ['bottomRight'], // Phân trang nằm bên phải 
+        position: ['bottomRight'], 
       }}
-      // Class để bạn dễ dàng custom CSS cho cả dự án
-      className="custom-data-table" 
+      // 2. Nối chuỗi className mặc định với className được truyền vào từ bên ngoài
+      className={`custom-data-table ${className || ''}`} 
     />
   );
 };

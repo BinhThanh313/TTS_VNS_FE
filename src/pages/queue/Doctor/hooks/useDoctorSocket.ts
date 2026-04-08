@@ -1,4 +1,3 @@
-// src/pages/queue/Doctor/hooks/useDoctorSocket.ts
 import { useEffect, useState, useCallback } from 'react';
 import { useSocket } from '@/context/SocketContext';
 

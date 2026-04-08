@@ -1,9 +1,9 @@
 import { DatePicker, Tabs, Space, Typography } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import { DataTable, AppButton } from '@/components/common'; // Dùng chung component common
-import { useRevenueReport } from './useRevenueReport';
+import { useRevenueReport } from './hooks/useRevenueReport';
 import { RevenueCharts } from './components/RevenueCharts';
-import { mockTableDoiTuong, mockTableHTTT, columnsDoiTuong, columnsHTTT } from './constants';
+import { mockTableDoiTuong, mockTableHTTT, columnsDoiTuong, columnsHTTT } from './components/constants';
 
 const { Title } = Typography;
 

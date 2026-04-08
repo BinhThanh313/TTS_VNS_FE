@@ -1,5 +1,3 @@
-// src/pages/queue/Display/components/TicketNumber.tsx
-import React from 'react';
 import { Typography } from 'antd';
 
 interface Props {

@@ -1,0 +1,114 @@
+/* Wrapper của toàn bộ trang */
+.health-record-wrapper {
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  min-height: calc(100vh - 120px);
+  font-family: Arial, Helvetica, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  .page-title {
+    color: #0008b0;
+    margin: 0;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+
+  /* ĐÃ SỬA: Tăng chiều cao của các ô bộ lọc */
+  .filter-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+
+    /* Ép chiều cao 44px cho thẻ Input, Select và Button */
+    .ant-input-affix-wrapper, 
+    .ant-select-selector,
+    .btn-search-custom {
+      height: 44px !important; 
+      border-radius: 6px !important;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Căn giữa dòng chữ bên trong ô Select khi ô bị kéo cao lên */
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      line-height: 42px !important;
+    }
+    
+    .ant-input {
+      font-size: 15px;
+    }
+  }
+}
+
+/* Tùy chỉnh màu nút Tìm kiếm */
+.btn-search-custom {
+  background-color: #0008b0 !important;
+  border-color: #0008b0 !important;
+  color: #fff !important;
+  padding: 0 24px !important; 
+  font-weight: 500;
+
+  &:hover {
+    background-color: #1d39c4 !important; 
+    border-color: #1d39c4 !important;
+  }
+}
+
+/* Tùy chỉnh Bảng (Table) */
+.custom-health-table {
+  /* Khung viền ngoài của bảng */
+  border: 1px solid #a0a0a0 !important; 
+  border-radius: 8px;
+  overflow: hidden;
+
+  /* Header bảng */
+  .ant-table-thead > tr > th {
+    background-color: #f0f5ff !important; 
+    color: #0008b0 !important;            
+    font-weight: 700 !important;          
+    padding: 14px 16px !important;
+    border-bottom: 1px solid #a0a0a0 !important; 
+    /* Xóa kẻ dọc (vertical border) */
+    border-inline-end: none !important;
+    border-right: none !important;
+  }
+
+  /* Padding cho các hàng data */
+  .ant-table-tbody > tr > td {
+    padding: 14px 16px !important;
+    color: #333; 
+    border-bottom: 1px solid #f0f0f0 !important;
+    /* Xóa kẻ dọc (vertical border) */
+    border-inline-end: none !important;
+    border-right: none !important;
+  }
+
+  .ant-table-container {
+    border: none !important;
+  }
+}
+
+/* Tùy chỉnh nút "Xem" */
+.btn-view-action {
+  color: #0008b0 !important;
+  border-color: #0008b0 !important;
+  background-color: transparent !important;
+  border-radius: 4px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  height: 32px !important; /* Đảm bảo nút Xem ở trong bảng không bị kéo cao theo */
+
+  .anticon {
+    font-size: 13px;
+  }
+
+  &:hover {
+    background-color: #f0f5ff !important; 
+    color: #0008b0 !important;
+    border-color: #0008b0 !important;
+  }
+}
