@@ -1,0 +1,22 @@
+/* src/index.css */
+
+/* ================================
+   TAILWIND V4 - 1 dòng duy nhất
+   ================================ */
+@import "tailwindcss";
+
+/* ================================
+   TẮT PREFLIGHT để không xung đột
+   với Ant Design
+   ================================ */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    /* Reset chỉ box-sizing, KHÔNG reset button/input/heading */
+    box-sizing: border-box;
+  }
+}
+
+/* Tắt toàn bộ preflight của Tailwind */
+@import "tailwindcss/preflight" layer(base);
