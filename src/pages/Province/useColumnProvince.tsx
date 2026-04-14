@@ -1,3 +1,4 @@
+//src\pages\Province\useColumnProvince.tsx
 import { Space, Tooltip } from "antd";
 import { Pencil, Trash2 } from "lucide-react";
 import type { IProvince } from "@/types";

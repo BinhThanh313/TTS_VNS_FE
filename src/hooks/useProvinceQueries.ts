@@ -1,3 +1,4 @@
+// src/hooks/useProvinceQueries.ts
 import { useQuery } from "@tanstack/react-query";
 import { provinceService } from "@/services";
 import type { IProvinceSearchParams } from "@/types";

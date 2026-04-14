@@ -1,34 +1,36 @@
 import { useState } from "react";
 import { message } from "antd";
-import { useProvinceList, useCreateProvince, useUpdateProvince, useDeleteProvince } from "@/hooks";
+import { useQueryClient } from "@tanstack/react-query";
+import { useProvinceList, useUpdateProvince, useDeleteProvince } from "@/hooks";
+import { provinceService } from "@/services";
 import type { IProvince, IProvinceRequest } from "@/types";
 import { ActionMode as AM } from "@/types";
 import { useLogicProvince } from "./useLogicProvince";
 
 export function useProvinceActionLogic() {
+  const queryClient = useQueryClient();
   const [editingRecord, setEditingRecord] = useState<IProvince | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<AM>(AM.CREATE);
+  const [modalMode, setModalMode] = useState<AM>(AM.UPDATE);
   const [modalImportOpen, setModalImportOpen] = useState(false);
 
+  // Hook Search Pagination đã lấy ở form tìm kiếm
   const { searchParams, currentPage, pageSize, handleSearch, handlePageChange } = useLogicProvince();
-  const { data: provinceData, isPending: isLoadingList } = useProvinceList(searchParams);
   
-  const createMutation = useCreateProvince();
+  // Nối params với page/pageSize để API trả về đúng trang
+  const queryParams = { ...searchParams, page: currentPage, pageSize };
+  const { data: provinceData, isPending: isLoadingList } = useProvinceList(queryParams);
+  
   const updateMutation = useUpdateProvince();
   const deleteMutation = useDeleteProvince();
 
-  const handleOpenCreate = () => { setEditingRecord(null); setModalMode(AM.CREATE); setModalOpen(true); };
   const handleOpenEdit = (record: IProvince) => { setEditingRecord(record); setModalMode(AM.UPDATE); setModalOpen(true); };
   const handleCloseModal = () => { setModalOpen(false); setEditingRecord(null); };
 
   const handleSave = async (values: IProvinceRequest) => {
-    if (modalMode === AM.UPDATE && editingRecord) {
+    if (editingRecord) {
       await updateMutation.mutateAsync({ id: editingRecord.id, data: values });
       message.success("Cập nhật thành công!");
-    } else {
-      await createMutation.mutateAsync(values);
-      message.success("Thêm mới thành công!");
     }
     handleCloseModal();
   };
@@ -38,15 +40,19 @@ export function useProvinceActionLogic() {
     message.success("Xóa thành công!");
   };
 
-  const handleImportSuccess = () => { setModalImportOpen(false); message.success("Import thành công!"); };
+  // Hàm xử lý khi file Excel được đọc xong (Nhận data từ ProvinceImportModal)
+  const handleImportSuccess = async (importedData: IProvince[]) => { 
+    setModalImportOpen(false); 
+    await provinceService.importData(importedData);
+    queryClient.invalidateQueries({ queryKey: ["province"] }); // Làm mới bảng
+    message.success(`Đã import thành công ${importedData.length} bản ghi!`); 
+  };
 
   return {
-    // 🔥 ĐÃ SỬA: Lấy mảng data và lấy tổng số bản ghi
     provinceList: provinceData?.data ?? [], 
     totalRecords: provinceData?.total ?? 0, 
-
     editingRecord, modalOpen, modalMode, modalImportOpen, currentPage, pageSize, isLoadingList,
-    isSaving: createMutation.isPending || updateMutation.isPending,
-    handleOpenCreate, handleOpenEdit, handleCloseModal, handleSave, handleDelete, handleSearch, handlePageChange, setModalImportOpen, handleImportSuccess,
+    isSaving: updateMutation.isPending,
+    handleOpenEdit, handleCloseModal, handleSave, handleDelete, handleSearch, handlePageChange, setModalImportOpen, handleImportSuccess,
   };
 }

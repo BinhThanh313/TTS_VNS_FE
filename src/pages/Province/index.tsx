@@ -7,31 +7,12 @@ import { DataTable, showConfirmDialog } from "@/components/common";
 
 export default function ProvincePage() {
   const {
-    provinceList,
-    totalRecords,
-    editingRecord,
-    modalOpen,
-    modalMode,
-    modalImportOpen,
-    currentPage,
-    pageSize,
-    isLoadingList,
-    isSaving,
-    handleOpenCreate,
-    handleOpenEdit,
-    handleCloseModal,
-    handleSave,
-    handleDelete,
-    handleSearch,
-    handlePageChange,
-    setModalImportOpen,
-    handleImportSuccess,
+    provinceList, totalRecords, editingRecord, modalOpen, modalMode, modalImportOpen, currentPage, pageSize, isLoadingList, isSaving,
+    handleOpenEdit, handleCloseModal, handleSave, handleDelete, handleSearch, handlePageChange, setModalImportOpen, handleImportSuccess,
   } = useProvinceActionLogic();
 
   const { columns } = useColumnProvince({
-    currentPage,
-    pageSize,
-    onEdit: handleOpenEdit,
+    currentPage, pageSize, onEdit: handleOpenEdit,
     onDelete: (id) =>
       showConfirmDialog({
         title: "Xác nhận xóa",
@@ -41,11 +22,13 @@ export default function ProvincePage() {
   });
 
   return (
-    <div className="px-6 py-4 bg-white min-h-full">
+    <div className="px-6 py-4 bg-white min-h-[calc(100vh-120px)]
+      [&_.ant-table-wrapper]:border [&_.ant-table-wrapper]:border-gray-200 [&_.ant-table-wrapper]:rounded-lg [&_.ant-table-wrapper]:overflow-hidden 
+      [&_.ant-table-thead>tr>th]:!bg-[#f0f8ff] [&_.ant-table-thead>tr>th]:!text-gray-800 [&_.ant-table-thead>tr>th]:!font-semibold [&_.ant-table-thead>tr>th]:!text-center [&_.ant-table-thead>tr>th]:!border-b [&_.ant-table-thead>tr>th]:!border-gray-200"
+    >
       <ProvinceSearchForm
         onSearch={handleSearch}
         onImport={() => setModalImportOpen(true)}
-        onCreate={handleOpenCreate}
       />
 
       <DataTable

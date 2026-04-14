@@ -1,3 +1,4 @@
+// src/routes/index.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '@/components/layouts/MainLayout';
 import Login from '@/pages/auth/Login'; 
