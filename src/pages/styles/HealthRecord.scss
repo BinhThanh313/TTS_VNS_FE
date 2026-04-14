@@ -13,14 +13,12 @@
     font-weight: 700;
   }
 
-  /* ĐÃ SỬA: Tăng chiều cao của các ô bộ lọc */
   .filter-section {
     display: flex;
     gap: 16px;
     margin-bottom: 24px;
     flex-wrap: wrap;
 
-    /* Ép chiều cao 44px cho thẻ Input, Select và Button */
     .ant-input-affix-wrapper, 
     .ant-select-selector,
     .btn-search-custom {
@@ -30,7 +28,6 @@
       align-items: center;
     }
 
-    /* Căn giữa dòng chữ bên trong ô Select khi ô bị kéo cao lên */
     .ant-select-selection-item,
     .ant-select-selection-placeholder {
       line-height: 42px !important;
@@ -56,33 +53,27 @@
   }
 }
 
-/* Tùy chỉnh Bảng (Table) */
+/* Tùy chỉnh Bảng (Table) Danh sách */
 .custom-health-table {
-  /* Khung viền ngoài của bảng */
   border: 1px solid #a0a0a0 !important; 
   border-radius: 8px;
   overflow: hidden;
 
-  /* Header bảng */
   .ant-table-thead > tr > th {
-    background-color: #f0f5ff !important; 
-    color: #0008b0 !important;            
-    font-weight: 700 !important;          
-    padding: 14px 16px !important;
-    border-bottom: 1px solid #a0a0a0 !important; 
-    /* Xóa kẻ dọc (vertical border) */
-    border-inline-end: none !important;
-    border-right: none !important;
+    background-color: #f0f5ff !important;
+      color: #0008b0 !important;
+      font-weight: 700 !important;
+      text-align: center !important; 
+      border-bottom: 1px solid #f0f0f0 !important;
+      border-inline-end: none !important;
   }
 
-  /* Padding cho các hàng data */
   .ant-table-tbody > tr > td {
-    padding: 14px 16px !important;
-    color: #333; 
-    border-bottom: 1px solid #f0f0f0 !important;
-    /* Xóa kẻ dọc (vertical border) */
-    border-inline-end: none !important;
-    border-right: none !important;
+    padding: 12px 16px !important;
+      border-bottom: 1px solid #f0f0f0 !important;
+      border-inline-end: none !important;
+      font-size: 13px;
+      white-space: nowrap;
   }
 
   .ant-table-container {
@@ -100,7 +91,7 @@
   align-items: center;
   gap: 4px;
   padding: 0 12px;
-  height: 32px !important; /* Đảm bảo nút Xem ở trong bảng không bị kéo cao theo */
+  height: 32px !important; 
 
   .anticon {
     font-size: 13px;
@@ -110,5 +101,196 @@
     background-color: #f0f5ff !important; 
     color: #0008b0 !important;
     border-color: #0008b0 !important;
+  }
+}
+
+/* ========================================================
+   CSS CHO MÀN HÌNH CHI TIẾT (HealthRecordDetail)
+   ======================================================== */
+
+/* Tùy chỉnh Sidebar Menu */
+.custom-detail-menu {
+  border-inline-end: none !important; 
+  
+  .ant-menu-item {
+    margin: 4px 8px !important;
+    width: calc(100% - 16px) !important;
+    border-radius: 4px !important;
+    color: #333;
+    font-weight: 500;
+
+    &-selected {
+      background-color: #f0f5ff !important;
+      color: #0008b0 !important;
+      font-weight: 700;
+      position: relative;
+      &::before {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background-color: #0008b0;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+    }
+  }
+}
+
+/* Tùy chỉnh Tabs */
+.custom-detail-tabs {
+  .ant-tabs-nav {
+    margin-bottom: 24px;
+    &::before {
+      border-bottom: 1px solid #d9d9d9 !important;
+    }
+  }
+  
+  .ant-tabs-tab {
+    padding: 12px 0;
+    color: #555;
+    margin: 0 16px 0 0 !important; 
+    
+    &-active {
+      .ant-tabs-tab-btn {
+        color: #0008b0 !important;
+      }
+    }
+  }
+  
+  .ant-tabs-ink-bar {
+    background: #0008b0 !important;
+    height: 3px !important;
+  }
+
+  /* ========================================================
+     ẨN NÚT 3 CHẤM VÀ BẬT CUỘN NGANG (FIX LỖI KHOẢNG TRẮNG)
+     ======================================================== */
+  
+  .ant-tabs-nav-operations {
+    display: none !important;
+  }
+
+  .ant-tabs-nav-wrap {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    
+    &::-webkit-scrollbar {
+      height: 4px; 
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #d9d9d9;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a0a0a0;
+    }
+  }
+
+  .ant-tabs-nav-list {
+    transform: none !important; /* Ép Ant Design vô hiệu hóa tính năng đẩy JS */
+  }
+}
+/* ========================================================
+   CSS CHO TRƯỜNG DỮ LIỆU CÓ GẠCH CHÂN
+   ======================================================== */
+.underline-field {
+  margin-bottom: 16px;
+
+  &-label {
+    color: #8c8c8c;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  &-value {
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    
+    .unit {
+      font-weight: normal;
+      color: #888;
+    }
+  }
+}
+
+/* ========================================================
+   TÙY CHỈNH COLLAPSE (KHUNG XỔ XUỐNG)
+   ======================================================== */
+.custom-detail-collapse {
+  /* Viền ngoài cùng của Collapse */
+  border: 1px solid #d9d9d9 !important; 
+  border-radius: 8px !important;
+  background-color: #fff !important;
+  overflow: hidden;
+  margin-bottom: 16px;
+
+  /* Loại bỏ viền trắng mặc định giữa các phần tử collapse nếu có */
+  .ant-collapse-item {
+    border-bottom: none !important;
+  }
+
+  /* Header của Collapse (Thanh tiêu đề màu xanh) */
+  .ant-collapse-header {
+    background-color: #f0f5ff !important;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #d9d9d9 !important;
+
+    .ant-collapse-header-text {
+      color: #0008b0 !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+    }
+  }
+
+  /* Phần nội dung Collapse */
+  .ant-collapse-content {
+    background-color: #fff !important;
+    
+    .ant-collapse-content-box {
+      padding: 16px !important; // Khoảng đệm cho nội dung/bảng bên trong
+    }
+  }
+
+  /* ----------------------------------------------------
+     Cấu hình riêng cho BẢNG nằm bên trong Collapse 
+     ---------------------------------------------------- */
+  .ant-table-wrapper {
+    border: 1px solid #f0f0f0; 
+    border-radius: 4px;
+
+    .ant-table-thead > tr > th {
+      background-color: #f0f5ff !important;
+      color: #0008b0 !important;
+      font-weight: 700 !important;
+      text-align: center !important;
+      border-bottom: 1px solid #f0f0f0 !important;
+      border-inline-end: none !important; 
+      font-size: 14px;
+    }
+
+    .ant-table-tbody > tr > td {
+      text-align: center !important;
+      border-bottom: 1px solid #f0f0f0 !important;
+      border-inline-end: none !important;
+      padding: 12px 8px !important;
+      font-size: 13px;
+    }
+
+    /* Hàng cuối cùng không cần border bottom */
+    .ant-table-tbody > tr:last-child > td {
+      border-bottom: none !important;
+    }
   }
 }

@@ -42,6 +42,7 @@ export const HealthRecordTable: React.FC<Props> = ({ dataSource, onView }) => {
       dataSource={dataSource}
       pagination={false} 
       className="custom-health-table"
+      rowKey="cccd"
     />
   );
 };

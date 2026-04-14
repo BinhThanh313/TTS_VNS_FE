@@ -7,7 +7,9 @@ import { Ward }from '@/pages/category/Ward/Ward';
 import RevenueReport from '@/pages/report/RevenueReport'; 
 import { ClinicService } from '@/pages/category/ClinicService/ClinicService';
 import { AllInOneTest } from '@/pages/queue/AllInOneTest';
-import HealthRecordList  from '@/pages/HealthRecords/HealthRecordList';
+import HealthRecordList from '@/pages/HealthRecords/HealthRecordList';
+import { HealthRecordDetail } from '@/pages/HealthRecords/HealthRecordDetail'; 
+
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +20,7 @@ export const router = createBrowserRouter([
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: null }, 
+      { index: true, element: <Navigate to="/dashboard" replace /> }, // Nên set mặc định về trang nào đó khi vào '/'
       
       { path: 'province', element: <Province /> },
       { path: 'district', element: <District /> },
@@ -34,7 +36,14 @@ export const router = createBrowserRouter([
       { path: 'accounts', element: <div style={{padding: 20}}>Trang Quản lý tài khoản</div> },
       { path: 'categories', element: <div style={{padding: 20}}>Trang Danh mục dùng chung</div> },
       { path: 'reports', element: <div style={{padding: 20}}>Trang Báo cáo</div> },
+      
+      // ==========================================
+      // MODULE HỒ SƠ SỨC KHỎE
+      // ==========================================
       { path: 'health-records', element: <HealthRecordList /> },
+      { path: 'health-records/:cccd', element: <HealthRecordDetail /> }, // THÊM DÒNG NÀY ĐỂ XEM CHI TIẾT
+      // ==========================================
+
       { path: 'authorization', element: <div style={{padding: 20}}>Trang Quản lý ủy quyền</div> },
     ],
   },
