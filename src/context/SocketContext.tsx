@@ -1,18 +1,36 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
+import React, { createContext, useContext, useEffect } from "react";
+import { io, Socket } from "socket.io-client";
+import { SOCKET_SERVER_URL } from "@/constants"; 
 
-// Đưa ra ngoài: Đảm bảo chỉ kết nối ĐÚNG 1 LẦN duy nhất
-const socketInstance = io('http://localhost:3000', {
+const socketInstance = io(SOCKET_SERVER_URL, {
   autoConnect: true,
+  // 🔥 THÊM 2 DÒNG NÀY ĐỂ TRÁNH SPAM CONSOLE KHI SERVER TẮT
+  reconnectionAttempts: 3, // Chỉ thử kết nối lại tối đa 3 lần rồi bỏ cuộc
+  reconnectionDelay: 3000, // Khoảng cách giữa các lần thử là 3 giây
 });
 
-interface SocketContextType { socket: Socket | null; }
-const SocketContext = createContext<SocketContextType>({ socket: socketInstance });
+interface ISocketContext {
+  socket: Socket | null;
+}
 
-export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const SocketContext = createContext<ISocketContext>({ socket: socketInstance });
+
+export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   useEffect(() => {
-    socketInstance.on('connect', () => console.log('✅ FE đã thông với BE'));
-    return () => { socketInstance.off('connect'); };
+    socketInstance.on("connect", () =>
+      console.log("✅ FE đã kết nối Socket Server")
+    );
+
+    socketInstance.on("connect_error", () => {
+      console.warn("⚠️ Socket Server đang tắt. Các tính năng realtime sẽ không hoạt động.");
+    });
+
+    return () => {
+      socketInstance.off("connect");
+      socketInstance.off("connect_error");
+    };
   }, []);
 
   return (
@@ -21,4 +39,5 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     </SocketContext.Provider>
   );
 };
+
 export const useSocket = () => useContext(SocketContext);

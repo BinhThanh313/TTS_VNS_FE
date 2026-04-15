@@ -1,3 +1,4 @@
+// src\pages\Ward\useLogicWard.ts
 import { useState } from "react";
 import type { IWardSearchParams } from "@/types";
 import { DEFAULT_PAGE_SIZE } from "@/constants";

@@ -11,12 +11,11 @@ interface Params {
 
 export function useColumnWard({ currentPage, pageSize, onEdit, onDelete }: Params) {
   const columns = [
-    { title: "STT", width: 60, align: "center" as const, render: (_: any, __: any, i: number) => (currentPage - 1) * pageSize + i + 1 },
-    { title: "Mã Xã/Phường", dataIndex: "code", align: "left" as const, width: 180 },
-    { title: "Tên Xã/Phường", dataIndex: "name", align: "left" as const },
-    { title: "Quận/Huyện", dataIndex: "districtName", align: "left" as const }, // Giả định backend trả về tên Huyện
+    { title: "STT", width: 80, align: "center" as const, render: (_: any, __: any, i: number) => (currentPage - 1) * pageSize + i + 1 },
+    { title: "Mã xã/phường", dataIndex: "code", align: "left" as const, width: 250 },
+    { title: "Tên xã/phường", dataIndex: "name", align: "left" as const },
     {
-      title: "Tác vụ", width: 100, align: "center" as const,
+      title: "Tác vụ", width: 100, align: "center" as const, // Cột tác vụ vẫn căn giữa
       render: (_: any, record: IWard) => (
         <Space size="middle">
           <Tooltip title="Cập nhật"><Pencil size={16} className="text-green-500 cursor-pointer hover:text-green-700" onClick={() => onEdit(record)} /></Tooltip>

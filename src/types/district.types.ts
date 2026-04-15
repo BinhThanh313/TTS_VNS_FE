@@ -1,3 +1,4 @@
+import type { IPaginationParams } from "./common.types";
 export interface IDistrict {
   id: string | number;
   provinceName: string;
@@ -12,7 +13,7 @@ export interface IDistrictRequest {
   name: string;
 }
 
-export interface IDistrictSearchParams {
+export interface IDistrictSearchParams extends IPaginationParams {
   name?: string;
   provinceId?: string; // Dùng khi filter theo tỉnh
 }

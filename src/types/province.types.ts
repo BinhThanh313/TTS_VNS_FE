@@ -1,3 +1,4 @@
+import type { IPaginationParams } from "./common.types";
 export interface IProvince {
   id: string | number;
   maTinh: string;
@@ -7,7 +8,7 @@ export interface IProvinceRequest {
   maTinh: string;
   tenTinh: string;
 }
-export interface IProvinceSearchParams {
+export interface IProvinceSearchParams extends IPaginationParams {
   tenTinh?: string;
   maTinh?: string;
 }

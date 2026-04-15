@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { message } from "antd";
-import { useWardList, useUpdateWard, useDeleteWard } from "@/hooks"; // Đảm bảo bạn có các hooks này
+import { useQueryClient } from "@tanstack/react-query";
+import { useWardList, useUpdateWard, useDeleteWard } from "@/hooks";
+import { wardService } from "@/services";
 import type { IWard, IWardRequest } from "@/types";
 import { ActionMode } from "@/types";
 import { useLogicWard } from "./useLogicWard";
 
 export function useWardActionLogic() {
+  const queryClient = useQueryClient();
   const [editingRecord, setEditingRecord] = useState<IWard | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<ActionMode>(ActionMode.UPDATE);
@@ -13,7 +16,9 @@ export function useWardActionLogic() {
 
   const { searchParams, currentPage, pageSize, handleSearch, handlePageChange } = useLogicWard();
   
-  const { data: wardData, isPending: isLoadingList } = useWardList(searchParams);
+  const queryParams = { ...searchParams, page: currentPage, pageSize };
+  const { data: wardData, isPending: isLoadingList } = useWardList(queryParams);
+  
   const updateMutation = useUpdateWard();
   const deleteMutation = useDeleteWard();
 
@@ -33,7 +38,12 @@ export function useWardActionLogic() {
     message.success("Xóa thành công!");
   };
 
-  const handleImportSuccess = () => { setModalImportOpen(false); message.success("Import thành công!"); };
+  const handleImportSuccess = async (importedData: IWard[]) => { 
+    setModalImportOpen(false); 
+    await wardService.importData(importedData);
+    queryClient.invalidateQueries({ queryKey: ["ward"] });
+    message.success(`Đã import thành công ${importedData.length} bản ghi!`); 
+  };
 
   return {
     wardList: wardData?.data ?? [], totalRecords: wardData?.total ?? 0,

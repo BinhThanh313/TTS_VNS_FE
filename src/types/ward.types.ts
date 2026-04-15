@@ -1,3 +1,4 @@
+import type { IPaginationParams } from "./common.types";
 export interface IWard {
   id: string | number;
   districtName: string;
@@ -12,7 +13,7 @@ export interface IWardRequest {
   name: string;
 }
 
-export interface IWardSearchParams {
+export interface IWardSearchParams extends IPaginationParams {
   districtId?: string;
   code?: string;
   name?: string;

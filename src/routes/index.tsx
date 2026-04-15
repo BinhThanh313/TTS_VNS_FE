@@ -1,17 +1,16 @@
-// src/routes/index.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '@/components/layouts/MainLayout';
 import Login from '@/pages/auth/Login'; 
 
-// --- 3 MODULE ĐÃ ĐƯỢC REFACTOR XONG ---
+// --- CÁC MODULE ĐÃ ĐƯỢC REFACTOR XONG ---
 import Province from '@/pages/Province';
 import District from '@/pages/District';
 import Ward from '@/pages/Ward';
+import RevenueReport from '@/pages/RevenueReport'; 
+import ClinicService from '@/pages/ClinicService'; 
+import QueueSystem from '@/pages/QueueSystem'; // 🔥 ĐÃ SỬA: Thêm import từ thư mục Queue mới
 
 // --- CÁC ĐƯỜNG DẪN CŨ (Sẽ refactor dần sau) ---
-import RevenueReport from '@/pages/report/RevenueReport'; 
-import { ClinicService } from '@/pages/category/ClinicService/ClinicService';
-import { AllInOneTest } from '@/pages/queue/AllInOneTest';
 import HealthRecordList from '@/pages/HealthRecords/HealthRecordList';
 import { HealthRecordDetail } from '@/pages/HealthRecords/HealthRecordDetail'; 
 
@@ -24,24 +23,17 @@ export const router = createBrowserRouter([
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: <Navigate to="/dashboard" replace /> },
+      { index: true, element: <Navigate to="/revenue" replace /> },
       
       // CHUẨN MỚI
       { path: 'province', element: <Province /> },
       { path: 'district', element: <District /> }, 
       { path: 'ward', element: <Ward /> }, 
-
-      // CHUẨN CŨ CHƯA SỬA
-      { path: 'clinic-service', element: <ClinicService /> },
       { path: 'revenue', element: <RevenueReport /> }, 
-      { path: 'queue/test-all', element: <AllInOneTest /> },
-      { path: 'dashboard', element: <div style={{padding: 20}}>Trang Dashboard</div> },
-      { path: 'system', element: <div style={{padding: 20}}>Trang Quản trị hệ thống</div> },
-      { path: 'accounts', element: <div style={{padding: 20}}>Trang Quản lý tài khoản</div> },
-      { path: 'categories', element: <div style={{padding: 20}}>Trang Danh mục dùng chung</div> },
-      { path: 'reports', element: <div style={{padding: 20}}>Trang Báo cáo</div> },
-      
-      // MODULE HỒ SƠ SỨC KHỎE
+      { path: 'clinic-service', element: <ClinicService /> }, 
+      { path: 'queue/test-all', element: <QueueSystem /> }, // 🔥 ĐÃ SỬA: Chuyển route này lên nhóm Chuẩn Mới
+
+      // MODULE HỒ SƠ SỨC KHỎE (Chưa sửa)
       { path: 'health-records', element: <HealthRecordList /> },
       { path: 'health-records/:cccd', element: <HealthRecordDetail /> }, 
 

@@ -12,11 +12,5 @@ export const menuMap: Record<string, string> = {
   '/ward': 'Xã/phường',
   '/clinic-service': 'Dịch vụ phòng khám',
   '/queue/test-all': 'Hàng đợi khám bệnh',
-  '/dashboard': 'Dashboard',
-  '/system': 'Quản trị hệ thống',
-  '/accounts': 'Quản lý tài khoản',
-  '/categories': 'Danh mục dùng chung',
-  '/reports': 'Báo cáo',
   '/health-records': 'Hồ sơ sức khỏe',
-  '/authorization': 'Quản lý ủy quyền',
 };

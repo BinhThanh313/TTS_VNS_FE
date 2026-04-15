@@ -25,13 +25,7 @@ export default function LeftMenu() {
     { key: '/ward', icon: <EnvironmentOutlined />, label: 'Xã/phường' },
     { key: '/clinic-service', icon: <AppstoreOutlined />, label: 'Dịch vụ phòng khám' },
     { key: '/queue/test-all', icon: <AppstoreOutlined />, label: 'Hàng chờ khám bệnh' },
-    { key: '/dashboard', icon: <AppstoreOutlined />, label: 'Dashboard' },
-    { key: '/system', icon: <SettingOutlined />, label: 'Quản trị hệ thống' },
-    { key: '/accounts', icon: <TeamOutlined />, label: 'Quản lý tài khoản' },
-    { key: '/categories', icon: <AppstoreOutlined />, label: 'Danh mục dùng chung' },
-    { key: '/reports', icon: <FileTextOutlined />, label: 'Báo cáo' },
     { key: '/health-records', icon: <MedicineBoxOutlined />, label: 'Hồ sơ sức khỏe' },
-    { key: '/authorization', icon: <SafetyCertificateOutlined />, label: 'Quản lý ủy quyền' },
   ];
 
   const filteredMenuItems = allMenuItems.filter(item => 

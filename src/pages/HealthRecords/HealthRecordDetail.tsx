@@ -1,3 +1,4 @@
+// scr/pages/HealthRecords/HealthRecordDetail.tsx
 import React, { useState } from 'react';
 import { Typography, Row, Col, Menu } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
