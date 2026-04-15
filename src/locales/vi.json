@@ -1,0 +1,18 @@
+{
+  "medicalRecord": {
+    "title": "Danh sách CBCS",
+    "detailTitle": "Chi tiết hồ sơ sức khỏe",
+    "searchPlaceholder": "Nhập tên CBCS hoặc CCCD",
+    "allUnits": "Tất cả đơn vị",
+    "allProfessions": "Tất cả nghề nghiệp",
+    "table": {
+      "cccd": "CCCD",
+      "fullName": "Họ và tên",
+      "dob": "Ngày sinh",
+      "gender": "Giới tính",
+      "profession": "Nghề nghiệp",
+      "unit": "Đơn vị",
+      "action": "Thao tác"
+    }
+  }
+}

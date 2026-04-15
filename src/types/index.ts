@@ -5,3 +5,4 @@ export * from "./ward.types";
 export * from "./revenue.types";
 export * from "./clinicService.types";
 export * from "./queue.types";
+export * from "./medicalRecord.types";
