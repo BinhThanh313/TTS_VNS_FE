@@ -25,19 +25,21 @@ export const MedicalRecord = () => {
         {t("medicalRecord.title")}
       </h2>
 
-      {/* Thay thế .filter-section */}
-      <div className="flex flex-wrap gap-4 mb-6 items-center">
+      {/* Thanh bộ lọc (Filters) */}
+      <div className="flex flex-row items-center gap-4 mb-6">
         <Input
           prefix={<Search size={18} className="text-gray-400" />}
           placeholder={t("medicalRecord.searchPlaceholder")}
           allowClear
-          className="w-[320px] h-[44px] rounded-md text-[15px]"
+          // Thay class w/h bằng style để ép cứng kích thước cho Ant Design
+          style={{ width: 320, height: 44 }}
+          className="rounded-md text-[15px]"
           onChange={(e) => handleSearch({ searchText: e.target.value })}
         />
 
         <Select
           defaultValue="all"
-          className="w-[200px] h-[44px]"
+          style={{ width: 200, height: 44 }}
           options={[
             { value: "all", label: t("medicalRecord.allUnits") },
             { value: "PX01", label: "Phòng PX01" },
@@ -47,7 +49,7 @@ export const MedicalRecord = () => {
 
         <Select
           defaultValue="all"
-          className="w-[200px] h-[44px]"
+          style={{ width: 200, height: 44 }}
           options={[
             { value: "all", label: t("medicalRecord.allProfessions") },
             { value: "canbo", label: "Cán bộ" },
@@ -55,10 +57,10 @@ export const MedicalRecord = () => {
           onChange={(val) => handleSearch({ profession: val })}
         />
 
-        {/* Thay thế .btn-search-custom */}
         <button
           onClick={() => {}}
-          className="h-[44px] px-6 bg-[#0008b0] text-white font-medium rounded-md flex items-center gap-2 hover:bg-[#1d39c4] transition-colors"
+          // Thêm shrink-0 ở cuối class để nút không bị ép móp lại khi màn hình nhỏ
+          className="h-[44px] px-6 bg-[#0008b0] text-white font-medium rounded-md flex items-center gap-2 hover:bg-[#1d39c4] transition-colors shrink-0"
         >
           <Search size={18} />
           {t("common.search")}

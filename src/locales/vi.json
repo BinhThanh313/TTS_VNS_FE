@@ -14,5 +14,14 @@
       "unit": "Đơn vị",
       "action": "Thao tác"
     }
+  },
+  "common": {
+    "search": "Tìm kiếm",
+    "view": "Xem",
+    "create": "Thêm mới",
+    "update": "Cập nhật",
+    "delete": "Xóa",
+    "close": "Đóng",
+    "save": "Lưu lại"
   }
 }
